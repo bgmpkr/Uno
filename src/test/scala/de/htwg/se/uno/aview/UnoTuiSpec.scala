@@ -146,5 +146,57 @@ class UnoTuiSpec extends AnyWordSpec with Matchers {
 
       noException should be thrownBy tui.handleInput("draw")
     }
+
+
+    "print 'Player X said UNO' for other players" in {
+      val player1 = PlayerHand(List(NumberCard("red", 1)), hasSaidUno = true)
+      val player2 = PlayerHand(List(NumberCard("blue", 2)), hasSaidUno = true)
+      val player3 = PlayerHand(List(NumberCard("green", 3)), hasSaidUno = false)
+      val stateWithMultipleUno = GameState(
+        players = List(player1, player2, player3),
+        currentPlayerIndex = 0,
+        allCards = List(),
+        isReversed = false,
+        drawPile = List(),
+        discardPile = List(NumberCard("red", 1)),
+        selectedColor = None
+      )
+      GameBoard.updateState(stateWithMultipleUno)
+      val context = new UnoPhases(stateWithMultipleUno)
+      val tui = new UnoTui(context)
+      val output = new java.io.ByteArrayOutputStream()
+      Console.withOut(output) {
+        tui.display()
+      }
+
+      output.toString should include("You said 'UNO'!") // current player message
+      output.toString should include("Player 2 said UNO") // other player message
+    }
+
+    "print error message when game state is not initialized (handleInput)" in {
+      val tui = new UnoTui(new UnoPhases(gameState))
+
+      def failureGameState = scala.util.Failure(new RuntimeException("State missing"))
+
+      val output = new java.io.ByteArrayOutputStream()
+      Console.withOut(output) {
+        noException should be thrownBy tui.handleInput("draw")
+      }
+    }
+
+    "print 'You said UNO!' when player has one card and hasn't said UNO" in {
+      val player = PlayerHand(List(NumberCard("red", 5)), hasSaidUno = false)
+      val state = gameState.copy(players = List(player), currentPlayerIndex = 0)
+      GameBoard.updateState(state)
+      val context = new UnoPhases(state)
+      val tui = new UnoTui(context)
+
+      val output = new java.io.ByteArrayOutputStream()
+      Console.withOut(output) {
+        tui.handleInput("draw")
+      }
+
+      output.toString should include("You said 'UNO'!")
+    }
   }
 }
