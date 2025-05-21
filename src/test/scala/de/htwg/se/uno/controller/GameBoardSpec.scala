@@ -1,5 +1,6 @@
 package de.htwg.se.uno.controller
 
+import de.htwg.se.uno.controller.command.DrawCardCommand
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 import de.htwg.se.uno.model.*
@@ -96,6 +97,66 @@ class GameBoardSpec extends AnyWordSpec with Matchers {
 
       GameBoard.updateState(initialState)
       GameBoard.isValidPlay(validCard, topCard, None) shouldBe true
+    }
+
+    "call invoker.undoCommand when undoCommand is called" in {
+      val command = DrawCardCommand()
+
+      GameBoard.executeCommand(command)
+      GameBoard.undoCommand()
+
+      succeed
+    }
+
+    "call invoker.redoCommand when redoCommand is called" in {
+      val command = DrawCardCommand()
+
+      GameBoard.executeCommand(command)
+      GameBoard.undoCommand()
+
+      GameBoard.redoCommand()
+
+      succeed
+    }
+
+    "return Some(index) when a player has an empty hand" in {
+      val playerWithEmptyHand = PlayerHand(List())
+      val playerWithCards = PlayerHand(List(Card("number")))
+
+      val gameState = GameState(
+        players = List(playerWithEmptyHand, playerWithCards),
+        currentPlayerIndex = 0,
+        allCards = List(),
+        isReversed = false,
+        discardPile = List(),
+        drawPile = List(),
+        selectedColor = None
+      )
+
+      GameBoard.updateState(gameState)
+
+      val winnerIndex = GameBoard.checkForWinner()
+      assert(winnerIndex.contains(0))
+    }
+
+    "return None when no player has an empty hand" in {
+      val player1 = PlayerHand(List(Card("number")))
+      val player2 = PlayerHand(List(Card("number")))
+
+      val gameState = GameState(
+        players = List(player1, player2),
+        currentPlayerIndex = 0,
+        allCards = List(),
+        isReversed = false,
+        discardPile = List(),
+        drawPile = List(),
+        selectedColor = None
+      )
+
+      GameBoard.updateState(gameState)
+
+      val winnerIndex = GameBoard.checkForWinner()
+      assert(winnerIndex.isEmpty)
     }
   }
 }
