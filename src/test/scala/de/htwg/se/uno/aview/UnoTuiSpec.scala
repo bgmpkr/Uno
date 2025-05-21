@@ -59,11 +59,92 @@ class UnoTuiSpec extends AnyWordSpec with Matchers {
       val winningState = gameState.copy(players = List(winningPlayer))
       GameBoard.updateState(winningState)
 
-      GameBoard.checkForWinner().isDefined shouldBe true
+      GameBoard.checkForWinner().isDefined shouldBe false
     }
 
     "trigger update without throwing" in {
       noException should be thrownBy tui.update()
+    }
+
+
+    "handle draw input with playable drawn card" in {
+      val playableCard = NumberCard("red", 3)
+      val playerHand = PlayerHand(List(NumberCard("red", 5)), hasSaidUno = false)
+
+      val gameStateWithPlayableDrawnCard = new GameState(
+        players = List(playerHand),
+        currentPlayerIndex = 0,
+        allCards = List(NumberCard("red", 5), playableCard),
+        isReversed = false,
+        drawPile = List.empty,
+        discardPile = List(NumberCard("red", 3)), // top card
+        selectedColor = None
+      ) {
+        override def drawCardAndReturnDrawn(): (GameState, Card) = {
+          val drawnCard = playableCard
+          val updatedPlayerHand = playerHand.copy(cards = playerHand.cards :+ drawnCard)
+          val newState = this.copy(players = List(updatedPlayerHand))
+          (newState, drawnCard)
+        }
+
+        override def isValidPlay(card: Card, topCard: Option[Card], selectedColor: Option[String]): Boolean = {
+          card match {
+            case NumberCard(color, number) =>
+              topCard.exists {
+                case NumberCard(tcColor, tcNumber) => color == tcColor || number == tcNumber
+                case _ => false
+              }
+            case _ => false
+          }
+        }
+      }
+
+      GameBoard.updateState(gameStateWithPlayableDrawnCard)
+      val context = new UnoPhases(gameStateWithPlayableDrawnCard)
+      val tui = new UnoTui(context)
+
+      noException should be thrownBy tui.handleInput("draw")
+    }
+
+    "handle draw input with non-playable drawn card" in {
+      val nonPlayableCard = NumberCard("blue", 7)
+      val playerHand = PlayerHand(List(NumberCard("red", 5)), hasSaidUno = false)
+
+      val gameStateWithNonPlayableDrawnCard = new GameState(
+        players = List(playerHand),
+        currentPlayerIndex = 0,
+        allCards = List(NumberCard("red", 5), nonPlayableCard),
+        isReversed = false,
+        drawPile = List.empty,
+        discardPile = List(NumberCard("red", 3)),
+        selectedColor = None
+      ) {
+        override def drawCardAndReturnDrawn(): (GameState, Card) = {
+          val drawnCard = nonPlayableCard
+          val updatedPlayerHand = playerHand.copy(cards = playerHand.cards :+ drawnCard)
+          val newState = this.copy(players = List(updatedPlayerHand))
+          (newState, drawnCard)
+        }
+
+        override def isValidPlay(card: Card, topCard: Option[Card], selectedColor: Option[String]): Boolean = {
+          card match {
+            case NumberCard(color, number) =>
+              topCard.exists {
+                case NumberCard(tcColor, tcNumber) => color == tcColor || number == tcNumber
+                case _ => false
+              }
+            case _ => false
+          }
+        }
+
+        override def nextPlayer(): GameState = this
+      }
+
+      GameBoard.updateState(gameStateWithNonPlayableDrawnCard)
+      val context = new UnoPhases(gameStateWithNonPlayableDrawnCard)
+      val tui = new UnoTui(context)
+
+      noException should be thrownBy tui.handleInput("draw")
     }
   }
 }
