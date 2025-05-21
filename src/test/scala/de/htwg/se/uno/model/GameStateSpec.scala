@@ -1,5 +1,6 @@
 package de.htwg.se.uno.model
 
+import de.htwg.se.uno.controller.GameBoard
 import de.htwg.se.uno.util.*
 import de.htwg.se.uno.model.*
 import org.scalatest.matchers.should.Matchers.*
@@ -640,6 +641,148 @@ class GameStateSpec extends AnyWordSpec {
         )
 
         gameState.isValidPlay(drawTwoCard, Some(numberCard)) shouldBe false
+      }
+      "GameBoard undo and redo commands" should {
+        "correctly revert and reapply a state change" in {
+          val handBefore = PlayerHand(List(NumberCard("red", 3)))
+          val handAfter = PlayerHand(List())
+
+          val dummyCard = NumberCard("red", 3)
+          val discardPile = List(dummyCard)
+          val drawPile = List(NumberCard("blue", 5), NumberCard("green", 7))
+
+          val initialState = GameState(
+            players = List(handBefore),
+            currentPlayerIndex = 0,
+            allCards = discardPile ++ drawPile,
+            isReversed = false,
+            discardPile = discardPile,
+            drawPile = drawPile,
+            selectedColor = Some("red")
+          )
+
+          val changedState = GameState(
+            players = List(handAfter),
+            currentPlayerIndex = 0,
+            allCards = discardPile ++ drawPile,
+            isReversed = false,
+            discardPile = discardPile,
+            drawPile = drawPile,
+            selectedColor = Some("red")
+          )
+
+          GameBoard.initGame(initialState)
+
+          class DummyStateChangeCommand(newState: GameState) extends Command {
+            private var previousState: Option[GameState] = None
+
+            override def execute(): Unit = {
+              previousState = GameBoard.gameState.toOption
+              GameBoard.updateState(newState)
+            }
+
+            override def undo(): Unit = {
+              previousState.foreach(GameBoard.updateState)
+            }
+
+            override def redo(): Unit = {
+              GameBoard.updateState(newState)
+            }
+          }
+
+          val command = new DummyStateChangeCommand(changedState)
+
+          GameBoard.executeCommand(command)
+          assert(GameBoard.gameState.get.players.head.isEmpty)
+
+          GameBoard.undoCommand()
+          assert(!GameBoard.gameState.get.players.head.isEmpty)
+
+          GameBoard.redoCommand()
+          assert(GameBoard.gameState.get.players.head.isEmpty)
+        }
+      }
+      
+      "GameBoard isValidPlay" should {
+        "return true for ActionCard matching selectedColor" in {
+          val card = ActionCard("red", "skip")
+          val topCard = NumberCard("blue", 5)
+          val selectedColor = Some("red")
+
+          val dummyState = GameState(
+            players = List(PlayerHand(Nil)),
+            currentPlayerIndex = 0,
+            allCards = List(card, topCard),
+            isReversed = false,
+            discardPile = List(topCard),
+            drawPile = Nil,
+            selectedColor = selectedColor
+          )
+
+          GameBoard.initGame(dummyState)
+
+          assert(GameBoard.isValidPlay(card, topCard, selectedColor))
+        }
+
+        "return true for NumberCard matching selectedColor" in {
+          val card = NumberCard("red", 3)
+          val topCard = NumberCard("blue", 5)
+          val selectedColor = Some("red")
+
+          val dummyState = GameState(
+            players = List(PlayerHand(Nil)),
+            currentPlayerIndex = 0,
+            allCards = List(card, topCard),
+            isReversed = false,
+            discardPile = List(topCard),
+            drawPile = Nil,
+            selectedColor = selectedColor
+          )
+
+          GameBoard.initGame(dummyState)
+
+          assert(GameBoard.isValidPlay(card, topCard, selectedColor))
+        }
+
+        "return true for WildCard when selectedColor is set" in {
+          val card = WildCard("wild")
+          val topCard = NumberCard("green", 2)
+          val selectedColor = Some("red")
+
+          val dummyState = GameState(
+            players = List(PlayerHand(Nil)),
+            currentPlayerIndex = 0,
+            allCards = List(card, topCard),
+            isReversed = false,
+            discardPile = List(topCard),
+            drawPile = Nil,
+            selectedColor = selectedColor
+          )
+
+          GameBoard.initGame(dummyState)
+
+          assert(GameBoard.isValidPlay(card, topCard, selectedColor))
+        }
+
+        "return true for ActionCard when selectedColor matches color but not top card" in {
+          val playedCard = ActionCard("yellow", "reverse")
+          val topCard = ActionCard("red", "skip") 
+          val selectedColor = Some("yellow")
+
+          val dummyState = GameState(
+            players = List(PlayerHand(Nil)),
+            currentPlayerIndex = 0,
+            allCards = List(playedCard, topCard),
+            isReversed = false,
+            discardPile = List(topCard),
+            drawPile = Nil,
+            selectedColor = selectedColor
+          )
+
+          GameBoard.initGame(dummyState)
+
+          assert(GameBoard.isValidPlay(playedCard, topCard, selectedColor))
+        }
       }
     }
   }
