@@ -112,5 +112,54 @@ class PlayCardCommandSpec extends AnyWordSpec with Matchers {
       updated.players(1).cards.size shouldBe 5
       updated.currentPlayerIndex shouldBe 1
     }
+
+    "cover undo and redo methods" in {
+      val playerHand = PlayerHand(List(NumberCard("red", 3)))
+      val initialState = GameState(
+        players = List(playerHand),
+        currentPlayerIndex = 0,
+        allCards = playerHand.cards,
+        isReversed = false,
+        discardPile = List(NumberCard("red", 5)),
+        drawPile = List(),
+        selectedColor = None
+      )
+
+      GameBoard.updateState(initialState)
+
+      val cardToPlay = NumberCard("red", 3)
+      val command = PlayCardCommand(cardToPlay)
+
+      command.execute()
+
+      command.undo()
+      assert(GameBoard.gameState.isSuccess)
+
+      command.redo()
+      assert(GameBoard.gameState.isSuccess)
+    }
+
+    "cover skip action with nextPlayer twice" in {
+      val skipCard = ActionCard("red", "skip")
+      val playerHand = PlayerHand(List(skipCard))
+
+      val initialState = GameState(
+        players = List(playerHand, PlayerHand(List())),
+        currentPlayerIndex = 0,
+        allCards = playerHand.cards,
+        isReversed = false,
+        discardPile = List(ActionCard("red", "reverse")),
+        drawPile = List(),
+        selectedColor = None
+      )
+
+      GameBoard.updateState(initialState)
+
+      val command = PlayCardCommand(skipCard)
+      command.execute()
+
+      val updatedState = GameBoard.gameState.get
+      assert(updatedState.currentPlayerIndex == 0)
+    }
   }
 }
