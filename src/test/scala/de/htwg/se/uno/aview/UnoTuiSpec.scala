@@ -198,5 +198,21 @@ class UnoTuiSpec extends AnyWordSpec with Matchers {
 
       output.toString should include("You said 'UNO'!")
     }
+    "allow setting and getting shouldExit flag" in {
+      val tui = new UnoTui(new UnoPhases(gameState))
+      tui.setShouldExit(true)
+      tui.shouldExit shouldBe true
+
+      tui.setShouldExit(false)
+      tui.shouldExit shouldBe false
+    }
+
+    "handle 'undo' command without throwing" in {
+      noException should be thrownBy tui.handleInput("undo")
+    }
+
+    "handle 'redo' command without throwing" in {
+      noException should be thrownBy tui.handleInput("redo")
+    }
   }
 }
