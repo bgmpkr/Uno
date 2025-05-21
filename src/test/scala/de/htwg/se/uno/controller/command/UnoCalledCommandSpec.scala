@@ -78,5 +78,34 @@ class UnoCalledCommandSpec extends AnyWordSpec with Matchers {
       
       unoStates.state.getClass.getSimpleName should not be "GameOverPhase"
     }
+    "cover undo and redo methods indirectly" in {
+      val initialHand = PlayerHand(List(NumberCard("red", 3)))
+      val initialState = GameState(
+        players = List(initialHand),
+        currentPlayerIndex = 0,
+        allCards = initialHand.cards,
+        isReversed = false,
+        discardPile = List(),
+        drawPile = List(),
+        selectedColor = None
+      )
+
+      GameBoard.updateState(initialState)
+
+      val command = UnoCalledCommand()
+
+      command.execute()
+      val stateAfterExecute = GameBoard.gameState.get
+
+      command.undo()
+      val stateAfterUndo = GameBoard.gameState.get
+
+      assert(stateAfterUndo == initialState)
+
+      command.redo()
+      val stateAfterRedo = GameBoard.gameState.get
+
+      assert(stateAfterRedo != initialState)
+    }
   }
 }
