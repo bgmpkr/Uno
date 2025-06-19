@@ -2,8 +2,6 @@ package de.htwg.se.uno.model.gameComponent.base.state
 
 case class ColorWishPhase(context: UnoPhases) extends GamePhase {
   override def playCard(): GamePhase = {
-    // Integriere Farbwahl z.B. durch Setzen eines aktuellen Farbwunschs
-    // Dummylogik: context.gameState = context.gameState.setCurrentColor(chosenColor)
     context.setState(PlayerTurnPhase(context))
     context.state
   }

@@ -28,7 +28,7 @@ case class DrawCardCommand(gameBoard: ControllerInterface) extends Command {
         state.currentPlayerIndex, updatedPlayerHand
       )
 
-      val newGameState = state.copyWithPiles(updatedDrawPile, updatedDiscardPile)
+      val newGameState = state.copyWithPlayersAndPiles(updatedPlayers, updatedDrawPile, updatedDiscardPile)
 
       gameBoard.updateState(newGameState)
     }

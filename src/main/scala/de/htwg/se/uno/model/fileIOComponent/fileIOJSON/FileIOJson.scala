@@ -9,7 +9,7 @@ import scala.io.Source
 import de.htwg.se.uno.model.JsonFormats.*
 import de.htwg.se.uno.model.gameComponent.GameStateInterface
 
-class FileIO extends FileIOInterface {
+class FileIOJson extends FileIOInterface {
 
   override def save(gameState: GameStateInterface): Unit = {
     val concreteState = gameState.asInstanceOf[GameState]

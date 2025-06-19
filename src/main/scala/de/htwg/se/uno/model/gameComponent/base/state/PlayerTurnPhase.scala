@@ -1,12 +1,35 @@
 package de.htwg.se.uno.model.gameComponent.base.state
 
+import de.htwg.se.uno.model.playerComponent.PlayerHand
+
 case class PlayerTurnPhase(context: UnoPhases) extends GamePhase {
   override def nextPlayer(): GamePhase = {
     context.gameState = context.gameState.nextPlayer()
     context.state
   }
   override def playCard(): GamePhase = this
-  override def drawCard(): GamePhase = this
+  override def drawCard(): GamePhase = {
+    val gameState = context.gameState
+    val discardPile = gameState.discardPile
+    val drawPile = gameState.drawPile
+    if (drawPile.nonEmpty) {
+      val card = drawPile.head
+      val updatedHand = gameState.players(gameState.currentPlayerIndex).cards :+ card
+      val updatedPlayers = gameState.players.updated(gameState.currentPlayerIndex, PlayerHand(updatedHand))
+
+      val updatedGameState = gameState.copyWithPlayersAndPiles(
+        players = updatedPlayers,
+        drawPile = drawPile.tail,
+        discardPile = discardPile.tail
+      )
+      context.gameState = updatedGameState
+
+      println(s"Player drew: $card")
+    } else {
+      println("Draw pile is empty.")
+    }
+    this
+  }
   override def dealInitialCards(): GamePhase = this
   override def checkForWinner(): GamePhase = this
   override def playerSaysUno(): GamePhase = this

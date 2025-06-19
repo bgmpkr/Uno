@@ -31,5 +31,4 @@ trait GameStateInterface extends Observable {
   def copyWithSelectedColor(selectedColor: Option[String]): GameStateInterface
   def copyWithPlayersAndPiles(players: List[PlayerHand], drawPile: List[Card],
                               discardPile: List[Card]): GameStateInterface
-
 }
