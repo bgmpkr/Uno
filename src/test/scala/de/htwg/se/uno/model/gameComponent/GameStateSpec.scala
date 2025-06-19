@@ -1,11 +1,15 @@
 package de.htwg.se.uno.model.gameComponent.base
 
+import de.htwg.se.uno.controller.controllerComponent.ControllerInterface
 import de.htwg.se.uno.controller.controllerComponent.base.GameBoard
 import de.htwg.se.uno.model.cardComponent.{ActionCard, Card, NumberCard, WildCard}
 import de.htwg.se.uno.model.playerComponent.PlayerHand
-import de.htwg.se.uno.model.gameComponent.{Failure, Success}
+import de.htwg.se.uno.model.gameComponent.{Failure, GameStateInterface, Success}
+import de.htwg.se.uno.util.Command
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
+
+import scala.util.Try
 
 class GameStateSpec extends AnyWordSpec with Matchers {
 
@@ -14,20 +18,74 @@ class GameStateSpec extends AnyWordSpec with Matchers {
   val redDraw2: ActionCard = ActionCard("red", "draw two")
   val wildCard: WildCard = WildCard("wild")
   val drawFour: WildCard = WildCard("wild draw four")
+  val yellow7: NumberCard = NumberCard("yellow", 7)
+  val green9: NumberCard = NumberCard("green", 9)
 
   val allCards: List[Card] = List(red5, blue5, redDraw2, wildCard, drawFour)
-  val player1: PlayerHand = PlayerHand(List(red5))
-  val player2: PlayerHand = PlayerHand(List(blue5))
+  val player1: PlayerHand = PlayerHand(List(redDraw2))
+  val player2: PlayerHand = PlayerHand(List(blue5, yellow7))
   val initialPlayers: List[PlayerHand] = List(player1, player2)
 
   val initialState: GameState = GameState(
     players = initialPlayers,
     currentPlayerIndex = 0,
     allCards = allCards,
-    discardPile = List(redDraw2),
-    drawPile = List(wildCard, red5, blue5),
+    discardPile = List(green9),
+    drawPile = List(green9, yellow7),
     isReversed = false
   )
+  val dummyController = new ControllerInterface {
+    private var currentGameState: GameStateInterface = initialState
+    override val fullDeck: List[Card] = allCards
+
+    override def gameState: Try[GameStateInterface] = scala.util.Success(currentGameState)
+
+    override def startGame(players: Int, cardsPerPlayer: Int): Unit = {
+      currentGameState = new GameState(
+        players = List.fill(players)(PlayerHand(List.fill(cardsPerPlayer)(allCards.head))),
+        currentPlayerIndex = 0,
+        allCards = allCards,
+        isReversed = false,
+        discardPile = List(allCards.last),
+        drawPile = allCards.drop(cardsPerPlayer * players + 1),
+        selectedColor = None,
+        currentPhase = None
+      )
+      notifyObservers()
+    }
+
+    override def updateState(newState: GameStateInterface): Unit = {
+      currentGameState = newState
+      notifyObservers()
+    }
+
+    override def initGame(state: GameStateInterface): Unit = updateState(state)
+
+    override def undoCommand(): Unit = {
+      notifyObservers()
+    }
+
+    override def redoCommand(): Unit = {
+      notifyObservers()
+    }
+
+    override def executeCommand(cmd: Command): Unit = {
+      cmd.execute()
+      notifyObservers()
+    }
+
+    override def checkForWinner(): Option[Int] = {
+      currentGameState.players.indexWhere(_.cards.isEmpty) match {
+        case -1 => None
+        case index => Some(index)
+      }
+    }
+
+    override def isValidPlay(card: Card, topCard: Card, selectedColor: Option[String]): Boolean = {
+      card.color == topCard.color ||
+        selectedColor.contains(card.color)
+    }
+  }
 
   "GameState" should {
 
@@ -73,24 +131,24 @@ class GameStateSpec extends AnyWordSpec with Matchers {
       val state = initialState.copy(
         players = List(PlayerHand(List(wildCard)), player2)
       )
-      val result = state.inputHandler("play wild:0:green")
+      val result = state.inputHandler("play wild:0:green", dummyController)
       result shouldBe a[Success]
     }
 
     "reject invalid input in inputHandler" in {
-      val result = initialState.inputHandler("play wild:abc:green")
+      val result = initialState.inputHandler("play wild:abc:green", dummyController)
       result shouldBe a[Failure]
     }
 
     "reject out-of-bounds card index in inputHandler" in {
-      val result = initialState.inputHandler("play wild:9:red")
+      val result = initialState.inputHandler("play wild:9:red", dummyController)
       result shouldBe a[Failure]
     }
 
     "successfully play a valid card using inputHandler" in {
       GameBoard.updateState(initialState)
 
-      val result = initialState.inputHandler("play card:0")
+      val result = initialState.inputHandler("play card:0", dummyController)
 
       result match {
         case Success(newState) =>
@@ -104,7 +162,7 @@ class GameStateSpec extends AnyWordSpec with Matchers {
     "fail inputHandler with invalid card index" in {
       GameBoard.updateState(initialState)
 
-      val result = initialState.inputHandler("play card:99")
+      val result = initialState.inputHandler("play card:99", dummyController)
 
       result match {
         case Failure(msg) => msg should include ("Invalid card index")
@@ -113,7 +171,7 @@ class GameStateSpec extends AnyWordSpec with Matchers {
     }
 
     "fail inputHandler if card index is not a number" in {
-      val result = initialState.inputHandler("play card:abc")
+      val result = initialState.inputHandler("play card:abc", dummyController)
 
       result match {
         case Failure(msg) => msg should include ("must be a digit")
@@ -122,22 +180,36 @@ class GameStateSpec extends AnyWordSpec with Matchers {
     }
 
     "undo invalid play and assign penalty card in inputHandler" in {
-      val state = initialState.copy(
-        players = List(PlayerHand(List(redDraw2)), player2),
-        discardPile = List(blue5)
+      val player1InitialHand = List(redDraw2)
+      val player2InitialHand = List(blue5, yellow7)
+      val initialState = new GameState(
+        players = List(PlayerHand(player1InitialHand), PlayerHand(player2InitialHand)),
+        currentPlayerIndex = 0,
+        allCards = List(redDraw2, blue5, yellow7, green9),
+        isReversed = false,
+        discardPile = List(blue5),
+        drawPile = List(green9, yellow7),
+        selectedColor = None,
+        currentPhase = None
       )
-      GameBoard.updateState(state)
 
-      val result = state.inputHandler("play card:0")
+      GameBoard.updateState(initialState)
+
+      val result = initialState.inputHandler("play card:0", dummyController)
 
       result match {
         case Failure(msg) =>
-          msg should include ("Invalid play")
+          msg should include("Invalid play")
 
-          val currentState = GameBoard.gameState.get
-          currentState.players(1).cards.length should be > player2.cards.length
+          val updatedState = dummyController.gameState.get
 
-        case _ => fail("Expected Failure but got Success or other")
+          updatedState.players.head.cards shouldBe List(green9, redDraw2)
+          updatedState.players(1).cards shouldBe player2InitialHand
+          updatedState.currentPlayerIndex shouldBe 0
+          updatedState.drawPile shouldBe List(yellow7)
+
+        case Success(_) =>
+          fail("Expected Failure for invalid play but got Success")
       }
     }
   }

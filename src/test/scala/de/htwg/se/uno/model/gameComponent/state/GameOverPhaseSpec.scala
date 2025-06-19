@@ -11,7 +11,7 @@ class GameOverPhaseSpec extends AnyWordSpec with Matchers {
 
     val dummyGameState = GameState(Nil, 0, Nil, false, Nil, Nil)
     val unoStates = new UnoPhases(dummyGameState)
-    val gameOverState = GameOverPhase(unoStates)
+    val gameOverState = GameOverPhase()
 
     "return this on playCard" in {
       gameOverState.playCard() shouldBe gameOverState
