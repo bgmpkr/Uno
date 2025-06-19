@@ -3,33 +3,33 @@
         <playerHand>
             <hand>
                 <cards>
-                    <card type="ActionCard">
-                        <color>green</color>
-                        <action>reverse</action>
-                    </card>
-                    <card type="NumberCard">
-                        <color>red</color>
-                        <number>3</number>
-                    </card>
-                    <card type="NumberCard">
-                        <color>red</color>
-                        <number>7</number>
-                    </card>
                     <card type="NumberCard">
                         <color>green</color>
                         <number>7</number>
                     </card>
-                    <card type="ActionCard">
+                    <card type="NumberCard">
                         <color>yellow</color>
-                        <action>skip</action>
+                        <number>9</number>
                     </card>
                     <card type="NumberCard">
-                        <color>red</color>
+                        <color>yellow</color>
                         <number>8</number>
                     </card>
-                    <card type="NumberCard">
+                    <card type="ActionCard">
+                        <color>blue</color>
+                        <action>reverse</action>
+                    </card>
+                    <card type="ActionCard">
                         <color>red</color>
+                        <action>draw two</action>
+                    </card>
+                    <card type="NumberCard">
+                        <color>blue</color>
                         <number>1</number>
+                    </card>
+                    <card type="NumberCard">
+                        <color>green</color>
+                        <number>2</number>
                     </card>
                 </cards>
             </hand>
@@ -38,15 +38,33 @@
         <playerHand>
             <hand>
                 <cards>
-                    <card type="WildCard">
-                        <action>wild</action>
-                    </card>
                     <card type="ActionCard">
                         <color>green</color>
+                        <action>draw two</action>
+                    </card>
+                    <card type="ActionCard">
+                        <color>blue</color>
                         <action>skip</action>
                     </card>
-                    <card type="WildCard">
-                        <action>wild draw four</action>
+                    <card type="NumberCard">
+                        <color>yellow</color>
+                        <number>3</number>
+                    </card>
+                    <card type="NumberCard">
+                        <color>red</color>
+                        <number>3</number>
+                    </card>
+                    <card type="NumberCard">
+                        <color>green</color>
+                        <number>6</number>
+                    </card>
+                    <card type="NumberCard">
+                        <color>red</color>
+                        <number>4</number>
+                    </card>
+                    <card type="ActionCard">
+                        <color>blue</color>
+                        <action>reverse</action>
                     </card>
                 </cards>
             </hand>
@@ -58,148 +76,10 @@
     <discardPile>
         <card type="NumberCard">
             <color>blue</color>
-            <number>3</number>
-        </card>
-        <card type="NumberCard">
-            <color>blue</color>
-            <number>4</number>
-        </card>
-        <card type="NumberCard">
-            <color>blue</color>
-            <number>7</number>
-        </card>
-        <card type="NumberCard">
-            <color>blue</color>
-            <number>5</number>
-        </card>
-        <card type="NumberCard">
-            <color>yellow</color>
-            <number>5</number>
-        </card>
-        <card type="NumberCard">
-            <color>yellow</color>
-            <number>7</number>
-        </card>
-        <card type="ActionCard">
-            <color>yellow</color>
-            <action>skip</action>
-        </card>
-        <card type="NumberCard">
-            <color>yellow</color>
             <number>9</number>
-        </card>
-        <card type="NumberCard">
-            <color>yellow</color>
-            <number>2</number>
-        </card>
-        <card type="WildCard">
-            <action>wild draw four</action>
         </card>
     </discardPile>
     <drawPile>
-        <card type="WildCard">
-            <action>wild</action>
-        </card>
-        <card type="NumberCard">
-            <color>blue</color>
-            <number>7</number>
-        </card>
-        <card type="NumberCard">
-            <color>green</color>
-            <number>1</number>
-        </card>
-        <card type="NumberCard">
-            <color>blue</color>
-            <number>6</number>
-        </card>
-        <card type="ActionCard">
-            <color>red</color>
-            <action>skip</action>
-        </card>
-        <card type="NumberCard">
-            <color>yellow</color>
-            <number>8</number>
-        </card>
-        <card type="NumberCard">
-            <color>blue</color>
-            <number>8</number>
-        </card>
-        <card type="NumberCard">
-            <color>yellow</color>
-            <number>9</number>
-        </card>
-        <card type="NumberCard">
-            <color>red</color>
-            <number>1</number>
-        </card>
-        <card type="NumberCard">
-            <color>yellow</color>
-            <number>3</number>
-        </card>
-        <card type="ActionCard">
-            <color>green</color>
-            <action>draw two</action>
-        </card>
-        <card type="NumberCard">
-            <color>red</color>
-            <number>8</number>
-        </card>
-        <card type="NumberCard">
-            <color>red</color>
-            <number>6</number>
-        </card>
-        <card type="ActionCard">
-            <color>blue</color>
-            <action>skip</action>
-        </card>
-        <card type="NumberCard">
-            <color>red</color>
-            <number>9</number>
-        </card>
-        <card type="NumberCard">
-            <color>green</color>
-            <number>8</number>
-        </card>
-        <card type="NumberCard">
-            <color>yellow</color>
-            <number>2</number>
-        </card>
-        <card type="NumberCard">
-            <color>yellow</color>
-            <number>9</number>
-        </card>
-        <card type="NumberCard">
-            <color>green</color>
-            <number>6</number>
-        </card>
-        <card type="NumberCard">
-            <color>blue</color>
-            <number>7</number>
-        </card>
-        <card type="NumberCard">
-            <color>yellow</color>
-            <number>6</number>
-        </card>
-        <card type="NumberCard">
-            <color>green</color>
-            <number>4</number>
-        </card>
-        <card type="NumberCard">
-            <color>green</color>
-            <number>3</number>
-        </card>
-        <card type="NumberCard">
-            <color>blue</color>
-            <number>2</number>
-        </card>
-        <card type="NumberCard">
-            <color>green</color>
-            <number>1</number>
-        </card>
-        <card type="NumberCard">
-            <color>green</color>
-            <number>2</number>
-        </card>
         <card type="ActionCard">
             <color>green</color>
             <action>draw two</action>
@@ -207,96 +87,88 @@
         <card type="WildCard">
             <action>wild draw four</action>
         </card>
-        <card type="NumberCard">
+        <card type="ActionCard">
             <color>blue</color>
-            <number>5</number>
+            <action>draw two</action>
         </card>
         <card type="NumberCard">
             <color>blue</color>
             <number>6</number>
         </card>
         <card type="NumberCard">
-            <color>red</color>
+            <color>green</color>
+            <number>1</number>
+        </card>
+        <card type="NumberCard">
+            <color>green</color>
+            <number>9</number>
+        </card>
+        <card type="NumberCard">
+            <color>green</color>
+            <number>6</number>
+        </card>
+        <card type="NumberCard">
+            <color>yellow</color>
             <number>2</number>
         </card>
         <card type="NumberCard">
             <color>green</color>
-            <number>3</number>
-        </card>
-        <card type="NumberCard">
-            <color>green</color>
-            <number>9</number>
-        </card>
-        <card type="NumberCard">
-            <color>red</color>
-            <number>7</number>
-        </card>
-        <card type="ActionCard">
-            <color>blue</color>
-            <action>skip</action>
-        </card>
-        <card type="NumberCard">
-            <color>yellow</color>
             <number>8</number>
         </card>
         <card type="NumberCard">
-            <color>green</color>
-            <number>8</number>
-        </card>
-        <card type="NumberCard">
-            <color>red</color>
-            <number>9</number>
+            <color>yellow</color>
+            <number>6</number>
         </card>
         <card type="NumberCard">
             <color>yellow</color>
-            <number>1</number>
-        </card>
-        <card type="ActionCard">
-            <color>yellow</color>
-            <action>draw two</action>
-        </card>
-        <card type="NumberCard">
-            <color>blue</color>
-            <number>1</number>
+            <number>5</number>
         </card>
         <card type="WildCard">
             <action>wild draw four</action>
         </card>
         <card type="NumberCard">
             <color>red</color>
-            <number>0</number>
-        </card>
-        <card type="NumberCard">
-            <color>yellow</color>
-            <number>2</number>
-        </card>
-        <card type="NumberCard">
-            <color>green</color>
-            <number>5</number>
-        </card>
-        <card type="ActionCard">
-            <color>blue</color>
-            <action>reverse</action>
-        </card>
-        <card type="NumberCard">
-            <color>green</color>
-            <number>7</number>
-        </card>
-        <card type="NumberCard">
-            <color>yellow</color>
-            <number>5</number>
-        </card>
-        <card type="NumberCard">
-            <color>yellow</color>
-            <number>7</number>
-        </card>
-        <card type="ActionCard">
-            <color>yellow</color>
-            <action>reverse</action>
+            <number>9</number>
         </card>
         <card type="ActionCard">
             <color>red</color>
-            <action>draw two</action>
+            <action>skip</action>
+        </card>
+        <card type="NumberCard">
+            <color>yellow</color>
+            <number>6</number>
+        </card>
+        <card type="NumberCard">
+            <color>green</color>
+            <number>9</number>
+        </card>
+        <card type="ActionCard">
+            <color>blue</color>
+            <action>skip</action>
+        </card>
+        <card type="NumberCard">
+            <color>green</color>
+            <number>4</number>
+        </card>
+        <card type="NumberCard">
+            <color>yellow</color>
+            <number>7</number>
+        </card>
+        <card type="NumberCard">
+            <color>blue</color>
+            <number>2</number>
+        </card>
+        <card type="NumberCard">
+            <color>yellow</color>
+            <number>8</number>
+        </card>
+        <card type="NumberCard">
+            <color>red</color>
+            <number>9</number>
+        </card>
+        <card type="NumberCard">
+            <color>red</color>
+            <number>5</number>
         </card>
         <card type="ActionCard">
             <color>yellow</color>
@@ -307,20 +179,24 @@
             <number>3</number>
         </card>
         <card type="NumberCard">
-            <color>yellow</color>
-            <number>6</number>
-        </card>
-        <card type="NumberCard">
-            <color>green</color>
-            <number>5</number>
-        </card>
-        <card type="NumberCard">
             <color>red</color>
-            <number>4</number>
+            <number>1</number>
         </card>
         <card type="NumberCard">
-            <color>yellow</color>
+            <color>blue</color>
             <number>0</number>
+        </card>
+        <card type="ActionCard">
+            <color>yellow</color>
+            <action>reverse</action>
+        </card>
+        <card type="ActionCard">
+            <color>green</color>
+            <action>draw two</action>
+        </card>
+        <card type="NumberCard">
+            <color>blue</color>
+            <number>5</number>
         </card>
         <card type="WildCard">
             <action>wild</action>
@@ -329,100 +205,250 @@
             <color>green</color>
             <action>skip</action>
         </card>
-        <card type="ActionCard">
+        <card type="NumberCard">
             <color>red</color>
-            <action>draw two</action>
+            <number>4</number>
         </card>
         <card type="NumberCard">
-            <color>blue</color>
-            <number>2</number>
+            <color>yellow</color>
+            <number>1</number>
+        </card>
+        <card type="ActionCard">
+            <color>yellow</color>
+            <action>reverse</action>
         </card>
         <card type="NumberCard">
             <color>blue</color>
             <number>4</number>
         </card>
         <card type="NumberCard">
+            <color>yellow</color>
+            <number>5</number>
+        </card>
+        <card type="NumberCard">
+            <color>green</color>
+            <number>0</number>
+        </card>
+        <card type="NumberCard">
+            <color>green</color>
+            <number>1</number>
+        </card>
+        <card type="NumberCard">
+            <color>green</color>
+            <number>4</number>
+        </card>
+        <card type="NumberCard">
+            <color>red</color>
+            <number>3</number>
+        </card>
+        <card type="ActionCard">
+            <color>red</color>
+            <action>reverse</action>
+        </card>
+        <card type="ActionCard">
+            <color>yellow</color>
+            <action>draw two</action>
+        </card>
+        <card type="ActionCard">
+            <color>red</color>
+            <action>reverse</action>
+        </card>
+        <card type="NumberCard">
+            <color>green</color>
+            <number>5</number>
+        </card>
+        <card type="NumberCard">
+            <color>red</color>
+            <number>7</number>
+        </card>
+        <card type="ActionCard">
             <color>blue</color>
+            <action>reverse</action>
+        </card>
+        <card type="ActionCard">
+            <color>green</color>
+            <action>reverse</action>
+        </card>
+        <card type="NumberCard">
+            <color>yellow</color>
             <number>9</number>
         </card>
         <card type="NumberCard">
             <color>yellow</color>
-            <number>4</number>
-        </card>
-        <card type="NumberCard">
-            <color>blue</color>
-            <number>3</number>
-        </card>
-        <card type="NumberCard">
-            <color>blue</color>
-            <number>9</number>
+            <number>0</number>
         </card>
         <card type="ActionCard">
             <color>green</color>
             <action>skip</action>
         </card>
         <card type="NumberCard">
-            <color>blue</color>
-            <number>1</number>
-        </card>
-        <card type="ActionCard">
-            <color>blue</color>
-            <action>draw two</action>
-        </card>
-        <card type="ActionCard">
-            <color>green</color>
-            <action>reverse</action>
-        </card>
-        <card type="NumberCard">
-            <color>red</color>
-            <number>5</number>
+            <color>yellow</color>
+            <number>7</number>
         </card>
         <card type="NumberCard">
             <color>green</color>
+            <number>6</number>
+        </card>
+        <card type="NumberCard">
+            <color>yellow</color>
+            <number>9</number>
+        </card>
+        <card type="NumberCard">
+            <color>blue</color>
+            <number>7</number>
+        </card>
+        <card type="NumberCard">
+            <color>yellow</color>
             <number>4</number>
         </card>
         <card type="NumberCard">
+            <color>red</color>
+            <number>3</number>
+        </card>
+        <card type="NumberCard">
             <color>green</color>
-            <number>0</number>
+            <number>8</number>
+        </card>
+        <card type="WildCard">
+            <action>wild draw four</action>
+        </card>
+        <card type="ActionCard">
+            <color>green</color>
+            <action>reverse</action>
+        </card>
+        <card type="WildCard">
+            <action>wild</action>
         </card>
         <card type="ActionCard">
             <color>blue</color>
-            <action>reverse</action>
+            <action>skip</action>
+        </card>
+        <card type="NumberCard">
+            <color>blue</color>
+            <number>1</number>
+        </card>
+        <card type="NumberCard">
+            <color>blue</color>
+            <number>6</number>
+        </card>
+        <card type="NumberCard">
+            <color>red</color>
+            <number>4</number>
+        </card>
+        <card type="NumberCard">
+            <color>red</color>
+            <number>8</number>
+        </card>
+        <card type="NumberCard">
+            <color>blue</color>
+            <number>9</number>
+        </card>
+        <card type="ActionCard">
+            <color>red</color>
+            <action>draw two</action>
+        </card>
+        <card type="NumberCard">
+            <color>green</color>
+            <number>5</number>
         </card>
         <card type="NumberCard">
             <color>blue</color>
             <number>8</number>
         </card>
         <card type="NumberCard">
-            <color>yellow</color>
-            <number>5</number>
-        </card>
-        <card type="NumberCard">
-            <color>green</color>
-            <number>6</number>
-        </card>
-        <card type="WildCard">
-            <action>wild</action>
-        </card>
-        <card type="NumberCard">
-            <color>red</color>
-            <number>5</number>
-        </card>
-        <card type="NumberCard">
-            <color>red</color>
-            <number>2</number>
+            <color>blue</color>
+            <number>1</number>
         </card>
         <card type="ActionCard">
-            <color>yellow</color>
-            <action>reverse</action>
+            <color>red</color>
+            <action>draw two</action>
+        </card>
+        <card type="NumberCard">
+            <color>red</color>
+            <number>0</number>
         </card>
         <card type="NumberCard">
             <color>red</color>
             <number>1</number>
         </card>
         <card type="NumberCard">
+            <color>red</color>
+            <number>6</number>
+        </card>
+        <card type="NumberCard">
+            <color>green</color>
+            <number>3</number>
+        </card>
+        <card type="ActionCard">
+            <color>blue</color>
+            <action>reverse</action>
+        </card>
+        <card type="ActionCard">
+            <color>blue</color>
+            <action>draw two</action>
+        </card>
+        <card type="WildCard">
+            <action>wild</action>
+        </card>
+        <card type="NumberCard">
+            <color>green</color>
+            <number>2</number>
+        </card>
+        <card type="NumberCard">
+            <color>red</color>
+            <number>6</number>
+        </card>
+        <card type="ActionCard">
             <color>yellow</color>
-            <number>4</number>
+            <action>draw two</action>
+        </card>
+        <card type="NumberCard">
+            <color>blue</color>
+            <number>5</number>
+        </card>
+        <card type="NumberCard">
+            <color>blue</color>
+            <number>7</number>
+        </card>
+        <card type="NumberCard">
+            <color>blue</color>
+            <number>2</number>
+        </card>
+        <card type="NumberCard">
+            <color>red</color>
+            <number>7</number>
+        </card>
+        <card type="ActionCard">
+            <color>red</color>
+            <action>skip</action>
+        </card>
+        <card type="NumberCard">
+            <color>yellow</color>
+            <number>8</number>
+        </card>
+        <card type="NumberCard">
+            <color>blue</color>
+            <number>3</number>
+        </card>
+        <card type="NumberCard">
+            <color>yellow</color>
+            <number>3</number>
+        </card>
+        <card type="NumberCard">
+            <color>red</color>
+            <number>2</number>
+        </card>
+        <card type="NumberCard">
+            <color>green</color>
+            <number>3</number>
+        </card>
+        <card type="NumberCard">
+            <color>green</color>
+            <number>2</number>
+        </card>
+        <card type="NumberCard">
+            <color>blue</color>
+            <number>8</number>
         </card>
         <card type="NumberCard">
             <color>red</color>
@@ -430,18 +456,6 @@
         </card>
         <card type="NumberCard">
             <color>yellow</color>
-            <number>3</number>
-        </card>
-        <card type="NumberCard">
-            <color>green</color>
-            <number>2</number>
-        </card>
-        <card type="NumberCard">
-            <color>red</color>
-            <number>6</number>
-        </card>
-        <card type="NumberCard">
-            <color>yellow</color>
             <number>1</number>
         </card>
         <card type="NumberCard">
@@ -449,54 +463,42 @@
             <number>4</number>
         </card>
         <card type="ActionCard">
-            <color>red</color>
-            <action>reverse</action>
-        </card>
-        <card type="NumberCard">
-            <color>green</color>
-            <number>9</number>
-        </card>
-        <card type="ActionCard">
-            <color>blue</color>
-            <action>draw two</action>
-        </card>
-        <card type="NumberCard">
-            <color>blue</color>
-            <number>5</number>
-        </card>
-        <card type="ActionCard">
-            <color>red</color>
-            <action>skip</action>
-        </card>
-        <card type="NumberCard">
-            <color>red</color>
-            <number>3</number>
-        </card>
-        <card type="ActionCard">
-            <color>red</color>
-            <action>reverse</action>
-        </card>
-        <card type="NumberCard">
-            <color>blue</color>
-            <number>0</number>
-        </card>
-        <card type="NumberCard">
             <color>yellow</color>
-            <number>7</number>
+            <action>skip</action>
         </card>
         <card type="WildCard">
             <action>wild</action>
         </card>
-        <card type="ActionCard">
-            <color>yellow</color>
-            <action>draw two</action>
+        <card type="NumberCard">
+            <color>green</color>
+            <number>7</number>
         </card>
         <card type="NumberCard">
-            <color>red</color>
+            <color>yellow</color>
             <number>4</number>
         </card>
         <card type="WildCard">
             <action>wild draw four</action>
+        </card>
+        <card type="NumberCard">
+            <color>red</color>
+            <number>2</number>
+        </card>
+        <card type="NumberCard">
+            <color>red</color>
+            <number>5</number>
+        </card>
+        <card type="NumberCard">
+            <color>yellow</color>
+            <number>3</number>
+        </card>
+        <card type="NumberCard">
+            <color>yellow</color>
+            <number>2</number>
+        </card>
+        <card type="NumberCard">
+            <color>green</color>
+            <number>7</number>
         </card>
     </drawPile>
     <selectedColor> </selectedColor>

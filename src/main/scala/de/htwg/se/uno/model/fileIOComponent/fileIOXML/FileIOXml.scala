@@ -11,17 +11,21 @@ import java.io.{File, PrintWriter}
 import scala.xml.{Elem, Node, PrettyPrinter, XML}
 
 class FileIOXml extends FileIOInterface {
-  override def save(gameState: GameStateInterface): Unit = {
-    val pw = new PrintWriter(new File("Uno.xml"))
+  private val savedir = "src/main/scala/de/htwg/se/uno/model/fileIOComponent/data/"
+  override def save(gameState: GameStateInterface, file: String = "Uno.xml"): Unit = {
+    new File(savedir).mkdirs()
+    val xmlFile = new File(savedir + file)
+    val pw = new PrintWriter(xmlFile)
     val prettyPrinter = new PrettyPrinter(120,4)
     val xml = prettyPrinter.format(gameStateToXml(gameState.asInstanceOf[GameState]))
     pw.write(xml)
     pw.close()
   }
 
-  override def load(): GameStateInterface = {
-    val file = XML.loadFile("Uno.xml")
-    gameStateFromXml(file)
+  override def load(file: String = "Uno.xml"): GameStateInterface = {
+    val xmlFile = new File(savedir + file)
+    val loadFileXml = XML.loadFile(xmlFile)
+    gameStateFromXml(loadFileXml)
   }
 
   private def gameStateToXml(game: GameState): Elem = {

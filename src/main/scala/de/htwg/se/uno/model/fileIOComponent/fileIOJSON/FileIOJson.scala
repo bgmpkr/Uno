@@ -10,16 +10,19 @@ import de.htwg.se.uno.model.JsonFormats.*
 import de.htwg.se.uno.model.gameComponent.GameStateInterface
 
 class FileIOJson extends FileIOInterface {
-
-  override def save(gameState: GameStateInterface): Unit = {
+  private val savedir = "src/main/scala/de/htwg/se/uno/model/fileIOComponent/data/"
+  override def save(gameState: GameStateInterface, file: String = "Uno.json"): Unit = {
+    new File(savedir).mkdirs()
     val concreteState = gameState.asInstanceOf[GameState]
-    val pw = new PrintWriter(new File("Uno.json"))
+    val jsonFile = new File(savedir + file)
+    val pw = new PrintWriter(jsonFile)
     pw.write(Json.prettyPrint(Json.toJson(concreteState)))
     pw.close()
   }
 
-  override def load(): GameStateInterface = {
-    val source = scala.io.Source.fromFile("Uno.json")
+  override def load(file: String = "Uno.json"): GameStateInterface = {
+    val jsonFile = new File(savedir + file)
+    val source = scala.io.Source.fromFile(jsonFile)
     val content = source.mkString
     source.close()
     Json.parse(content).as[GameState]
