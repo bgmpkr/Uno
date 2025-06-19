@@ -11,7 +11,7 @@ import java.io.{File, PrintWriter}
 import scala.xml.{Elem, Node, PrettyPrinter, XML}
 
 class FileIOXml extends FileIOInterface {
-  private val savedir = "src/main/scala/de/htwg/se/uno/model/fileIOComponent/data/"
+  val savedir = "src/main/scala/de/htwg/se/uno/model/fileIOComponent/data/"
   override def save(gameState: GameStateInterface, file: String = "Uno.xml"): Unit = {
     new File(savedir).mkdirs()
     val xmlFile = new File(savedir + file)
@@ -28,7 +28,7 @@ class FileIOXml extends FileIOInterface {
     gameStateFromXml(loadFileXml)
   }
 
-  private def gameStateToXml(game: GameState): Elem = {
+  def gameStateToXml(game: GameState): Elem = {
     <unoGame>
       <players>
         {game.players.map(playerHandToXml)}
@@ -54,17 +54,17 @@ class FileIOXml extends FileIOInterface {
     </unoGame>
   }
 
-  private def gameStateFromXml(node: Node): GameState = {
+  def gameStateFromXml(node: Node): GameState = {
     val players = (node \ "players" \ "playerHand").map(playerHandFromXml).toList
-    val currentPlayerIndex = (node \ "currentPlayerIndex").text.toInt
-    val isReversed = (node \ "isReversed").text.toBoolean
+    val currentPlayerIndex = (node \ "currentPlayerIndex").text.trim.toInt
+    val isReversed = (node \ "isReversed").text.trim.toBoolean
     val discardPile = (node \ "discardPile" \ "card").map(cardFromXml).toList
     val drawPile = (node \ "drawPile" \ "card").map(cardFromXml).toList
-    val selectedColor = (node \ "selectedColor").text match {
+    val selectedColor = (node \ "selectedColor").text.trim match {
       case "" => None
       case color => Some(color)
     }
-    val currentPhase = (node \ "currentPhase").text match {
+    val currentPhase = (node \ "currentPhase").text.trim match {
       case "" => None
       case phase => Some(GamePhase.withName(phase))
     }
@@ -72,7 +72,7 @@ class FileIOXml extends FileIOInterface {
     GameState(players, currentPlayerIndex, allCards = discardPile ++ drawPile, isReversed, discardPile, drawPile, selectedColor, currentPhase)
   }
 
-  private def playerHandToXml(playerHand: PlayerHand): Elem = {
+  def playerHandToXml(playerHand: PlayerHand): Elem = {
     <playerHand>
       <hand>
         <cards>{playerHand.cards.map(cardToXml)}</cards>
@@ -81,13 +81,13 @@ class FileIOXml extends FileIOInterface {
     </playerHand>
   }
 
-  private def playerHandFromXml(node: Node): PlayerHand = {
+  def playerHandFromXml(node: Node): PlayerHand = {
     val hand = (node \ "hand" \"cards" \ "card").map(cardFromXml).toList
     val hasSaidUno = (node \ "hasSaidUno").text.toBoolean
     PlayerHand(hand, hasSaidUno)
   }
 
-  private def cardToXml(card: Card): Elem = card match {
+  def cardToXml(card: Card): Elem = card match {
     case NumberCard(color, number) =>
       <card type="NumberCard">
         <color>{color}</color>
@@ -104,7 +104,7 @@ class FileIOXml extends FileIOInterface {
       </card>
   }
 
-  private def cardFromXml(node: Node): Card = {
+  def cardFromXml(node: Node): Card = {
     (node \ "@type").text match {
       case "NumberCard" =>
         val color = (node \ "color").text
