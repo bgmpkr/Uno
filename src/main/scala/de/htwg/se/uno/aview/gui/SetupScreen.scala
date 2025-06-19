@@ -65,20 +65,20 @@ object SetupScreen {
 
       onAction = _ => {
         try {
-          playersInput.value.value match {
-            case players if players >= 2 && players <= 10 =>
+          Option(playersInput.value.value) match {
+            case Some(players) if players >= 2 && players <= 10 =>
               gameBoard.startGame(players, defaultCardsPerPlayer)
               val gameScreen = new GameScreen(players, defaultCardsPerPlayer, gameBoard)
               primaryStage.scene = new Scene(gameScreen) {
                 fill = Color.DarkRed
               }
 
-            case _ =>
+            case Some(_) =>
               println("Please select a valid number of players (2-10)!")
+            case None =>
+              println("Please select a number of players first!")
           }
         } catch {
-          case _: NullPointerException =>
-            println("Please select a number of players first!")
           case e: Exception =>
             println(s"Unexpected error: ${e.getMessage}")
         }

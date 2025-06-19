@@ -7,6 +7,8 @@ import net.codingwell.scalaguice.ScalaModule
 import de.htwg.se.uno.model.gameComponent.GameStateInterface
 import de.htwg.se.uno.model.gameComponent.base.GameState
 import de.htwg.se.uno.controller.controllerComponent.base.{GameBoard, GameBoardDI}
+import de.htwg.se.uno.model.fileIOComponent.FileIOInterface
+import de.htwg.se.uno.model.fileIOComponent.fileIOJSON.FileIOJson
 
 class UnoModule extends AbstractModule with ScalaModule {
   override def configure(): Unit = {
@@ -15,5 +17,6 @@ class UnoModule extends AbstractModule with ScalaModule {
 
     bind[GameStateInterface].to[GameState]
     bind[ControllerInterface].to[GameBoardDI]
+    bind[FileIOInterface].to[FileIOJson]
   }
 }
