@@ -2,18 +2,18 @@ package de.htwg.se.uno.model.gameComponent
 
 import de.htwg.se.uno.controller.controllerComponent.ControllerInterface
 import de.htwg.se.uno.model.cardComponent.Card
+import de.htwg.se.uno.model.gameComponent.base.state.GamePhase
 import de.htwg.se.uno.model.playerComponent.PlayerHand
 import de.htwg.se.uno.util.Observable
 
-trait GameStateInterface extends Observable {
-  def players: List[PlayerHand]
-  def currentPlayerIndex: Int
-  def allCards: List[Card]
-  def isReversed: Boolean
-  def discardPile: List[Card]
-  def drawPile: List[Card]
+trait GameStateInterface (
+       val players: List[PlayerHand], val currentPlayerIndex: Int,
+       val allCards: List[Card], val isReversed: Boolean = false,
+       val discardPile: List[Card], val drawPile: List[Card],
+       val selectedColor: Option[String] = None,
+       val currentPhase: Option[GamePhase] = None
+  ) extends Observable {
   def setGameOver(): GameStateInterface
-  def selectedColor: Option[String]
   def copyWithPiles(drawPile: List[Card], discardPile: List[Card]): GameStateInterface
   def nextPlayer(): GameStateInterface
   def dealInitialCards(cardsPerPlayer: Int): GameStateInterface
@@ -31,5 +31,4 @@ trait GameStateInterface extends Observable {
   def copyWithSelectedColor(selectedColor: Option[String]): GameStateInterface
   def copyWithPlayersAndPiles(players: List[PlayerHand], drawPile: List[Card],
                               discardPile: List[Card]): GameStateInterface
-
 }

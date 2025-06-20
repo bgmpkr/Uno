@@ -17,7 +17,7 @@ import scalafx.scene.text.Text
 
 object SetupScreen {
 
-  def apply(primaryStage: PrimaryStage, gameBoard: ControllerInterface): StackPane = {
+  def apply(primaryStage: PrimaryStage) (using gameBoard: ControllerInterface): StackPane = {
     val setupImage = new ImageView(new Image("file:src/main/resources/UnoSetup.jpg")) {
       fitWidth = 1400
       fitHeight = 900
@@ -68,7 +68,7 @@ object SetupScreen {
           playersInput.value.value match {
             case players if players >= 2 && players <= 10 =>
               gameBoard.startGame(players, defaultCardsPerPlayer)
-              val gameScreen = new GameScreen(players, defaultCardsPerPlayer, gameBoard)
+              val gameScreen = new GameScreen(players, defaultCardsPerPlayer) (using gameBoard)
               primaryStage.scene = new Scene(gameScreen) {
                 fill = Color.DarkRed
               }

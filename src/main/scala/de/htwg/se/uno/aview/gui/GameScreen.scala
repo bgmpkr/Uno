@@ -21,7 +21,7 @@ import scalafx.scene.effect.DropShadow
 
 import scala.util.{Failure, Success}
 
-class GameScreen(players: Int, cardsPerPlayer: Int, gameBoard: ControllerInterface) extends StackPane {
+class GameScreen(players: Int, cardsPerPlayer: Int) (using gameBoard: ControllerInterface) extends StackPane {
   private var unoCaller: Option[Int] = None
   private var gameOver: Boolean = false
 
@@ -94,7 +94,7 @@ class GameScreen(players: Int, cardsPerPlayer: Int, gameBoard: ControllerInterfa
     pickOnBounds = true
     onMouseClicked = (e: MouseEvent) => {
       println("Draw pile clicked!")
-      gameBoard.executeCommand(DrawCardCommand(gameBoard))
+      gameBoard.executeCommand(DrawCardCommand()(using gameBoard))
       update()
       e.consume()
     }
@@ -103,7 +103,7 @@ class GameScreen(players: Int, cardsPerPlayer: Int, gameBoard: ControllerInterfa
   private val drawButton = new Button("Draw") {
     style = buttonStyle
     onAction = _ => {
-      gameBoard.executeCommand(DrawCardCommand(gameBoard))
+      gameBoard.executeCommand(DrawCardCommand()(using gameBoard))
       update()
     }
   }
@@ -111,7 +111,7 @@ class GameScreen(players: Int, cardsPerPlayer: Int, gameBoard: ControllerInterfa
   private val unoButton = new Button("UNO!") {
     style = buttonStyle
     onAction = _ => {
-      gameBoard.executeCommand(UnoCalledCommand(gameBoard))
+      gameBoard.executeCommand(UnoCalledCommand()(using gameBoard))
       unoCaller = gameBoard.gameState.toOption.map(_.currentPlayerIndex)
       update()
     }
@@ -308,7 +308,7 @@ class GameScreen(players: Int, cardsPerPlayer: Int, gameBoard: ControllerInterfa
           case wc: WildCard =>
             showColorPickerDialog(wc)
           case _ =>
-            gameBoard.executeCommand(PlayCardCommand(card, None, gameBoard))
+            gameBoard.executeCommand(PlayCardCommand(card, None) (using gameBoard))
             update()
 
             val pause = new PauseTransition(Duration(400))
@@ -320,7 +320,7 @@ class GameScreen(players: Int, cardsPerPlayer: Int, gameBoard: ControllerInterfa
                   if (!isValid) {
                     Platform.runLater {
                       gameBoard.undoCommand()
-                      gameBoard.executeCommand(DrawCardCommand(gameBoard))
+                      gameBoard.executeCommand(DrawCardCommand()(using gameBoard))
                       update()
                       showInvalidMoveMessage()
                     }
@@ -376,7 +376,7 @@ class GameScreen(players: Int, cardsPerPlayer: Int, gameBoard: ControllerInterfa
   private def playWildCard(wildCard: WildCard, color: String): Unit = {
     println(s"Playing wildcard with color: $color")
 
-    gameBoard.executeCommand(PlayCardCommand(wildCard, Some(color), gameBoard))
+    gameBoard.executeCommand(PlayCardCommand(wildCard, Some(color)) (using gameBoard))
     gameBoard.gameState match {
       case Success(newState) =>
         println(s"Wildcard played successfully, new player index: ${newState.currentPlayerIndex}")

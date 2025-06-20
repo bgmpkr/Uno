@@ -1,5 +1,6 @@
 package de.htwg.se.uno.model.gameComponent.base
 
+import com.google.inject.Inject
 import de.htwg.se.uno.controller.controllerComponent.ControllerInterface
 import de.htwg.se.uno.controller.controllerComponent.base.command.PlayCardCommand
 import de.htwg.se.uno.model.*
@@ -12,11 +13,18 @@ import de.htwg.se.uno.model.gameComponent.base.state.{GameOverPhase, GamePhase, 
 
 import scala.util.Try
 
-case class GameState( players: List[PlayerHand], currentPlayerIndex: Int,
-                      allCards: List[Card], isReversed: Boolean = false,
-                      discardPile: List[Card], drawPile: List[Card], selectedColor: Option[String] = None,
-                      currentPhase: Option[GamePhase] = None)
-  extends Observable, GameStateInterface {
+case class GameState @Inject() (
+     override val players: List[PlayerHand], override val currentPlayerIndex: Int,
+     override val allCards: List[Card], override val isReversed: Boolean = false,
+     override val discardPile: List[Card], override val drawPile: List[Card],
+     override val selectedColor: Option[String] = None,
+     override val currentPhase: Option[GamePhase] = None
+ ) extends Observable, GameStateInterface(players: List[PlayerHand], currentPlayerIndex: Int,
+                              allCards: List[Card], isReversed: Boolean,
+                              discardPile: List[Card], drawPile: List[Card],
+                              selectedColor: Option[String],
+                              currentPhase: Option[GamePhase]
+){
 
   def nextPlayer(): GameStateInterface = {
     val playerCount = players.length
@@ -216,7 +224,6 @@ case class GameState( players: List[PlayerHand], currentPlayerIndex: Int,
     (newState, card)
   }
 
-
   def setSelectedColor(color: String): GameStateInterface = {
     this.copy(selectedColor = Some(color))
   }
@@ -255,7 +262,7 @@ case class GameState( players: List[PlayerHand], currentPlayerIndex: Int,
             val chooseColor = selectedColor
 
             val isValid = isValidPlay(card, topCard)
-            val command = PlayCardCommand(card, chooseColor, gameBoard)
+            val command = PlayCardCommand(card, chooseColor) (using gameBoard)
 
             gameBoard.executeCommand(command)
 

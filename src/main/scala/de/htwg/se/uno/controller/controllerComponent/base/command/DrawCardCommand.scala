@@ -6,7 +6,7 @@ import de.htwg.se.uno.model.cardComponent.Card
 import de.htwg.se.uno.model.gameComponent.GameStateInterface
 import de.htwg.se.uno.util.Command
 
-case class DrawCardCommand(gameBoard: ControllerInterface) extends Command {
+case class DrawCardCommand(dummy: Unit = ())(using gameBoard: ControllerInterface) extends Command {
 
   var drawnCard: Option[Card] = None
   private var previousState: Option[GameStateInterface] = None

@@ -1,17 +1,17 @@
 package de.htwg.se.uno.aview
 
-import de.htwg.se.uno.model.*
-import de.htwg.se.uno.util.Observer
 import de.htwg.se.uno.aview.ColorPrinter.*
 import de.htwg.se.uno.controller.controllerComponent.ControllerInterface
-import de.htwg.se.uno.controller.controllerComponent.base.command.{DrawCardCommand, PlayCardCommand, UnoCalledCommand}
 import de.htwg.se.uno.controller.controllerComponent.base.GameBoard
+import de.htwg.se.uno.controller.controllerComponent.base.command.{DrawCardCommand, PlayCardCommand, UnoCalledCommand}
+import de.htwg.se.uno.model.*
 import de.htwg.se.uno.model.cardComponent.WildCard
 import de.htwg.se.uno.model.playerComponent.PlayerHand
+import de.htwg.se.uno.util.Observer
 
 import scala.io.StdIn.readLine
 
-class UnoTUI(controller: ControllerInterface) extends Observer {
+class UnoTUI(using controller: ControllerInterface) extends Observer {
 
   private var gameShouldExit = false
   var selectedColor: Option[String] = None
@@ -44,7 +44,7 @@ class UnoTUI(controller: ControllerInterface) extends Observer {
 
         if (!currentPlayer.cards.exists(card => state.isValidPlay(card, Some(topCard), selectedColor))) {
           println("No playable Card! You have to draw a card...")
-          GameBoard.executeCommand(DrawCardCommand(controller))
+          GameBoard.executeCommand(DrawCardCommand()(using controller))
           gameShouldExit = false
           display()
         } else {
@@ -75,7 +75,7 @@ class UnoTUI(controller: ControllerInterface) extends Observer {
                 if (drawnCard.isInstanceOf[WildCard]) Some(chooseWildColor())
                 else None
 
-              GameBoard.executeCommand(PlayCardCommand(drawnCard, chosenColor, GameBoard))
+              GameBoard.executeCommand(PlayCardCommand(drawnCard, chosenColor) (using GameBoard))
             } else {
               println("Card cannot be played, turn ends.")
               val skipped = newState.nextPlayer()
@@ -97,7 +97,7 @@ class UnoTUI(controller: ControllerInterface) extends Observer {
                   if (chosenCard.isInstanceOf[WildCard]) Some(chooseWildColor())
                   else None
 
-                GameBoard.executeCommand(PlayCardCommand(chosenCard, chosenColor, GameBoard))
+                GameBoard.executeCommand(PlayCardCommand(chosenCard, chosenColor) (using GameBoard))
                 
               case scala.util.Success(_) =>
                 println(s"Invalid index.")
@@ -166,7 +166,7 @@ class UnoTUI(controller: ControllerInterface) extends Observer {
         val updatedPlayer = state.players(state.currentPlayerIndex)
 
         if (updatedPlayer.cards.length == 1 && !updatedPlayer.hasSaidUno) {
-          GameBoard.executeCommand(UnoCalledCommand(controller))
+          GameBoard.executeCommand(UnoCalledCommand()(using controller))
           println("You said 'UNO'!")
         }
       case scala.util.Failure(exception: Throwable) =>

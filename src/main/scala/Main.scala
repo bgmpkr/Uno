@@ -10,7 +10,7 @@ object Main {
   def main(args: Array[String]): Unit = {
     val controller = GameBoard
 
-    val gui =  new UnoGUI(controller)
+    val gui =  new UnoGUI(using controller)
     GameBoard.addObserver(gui)
 
     Future {
@@ -21,7 +21,7 @@ object Main {
       Thread.sleep(100)
     }
 
-    val tui = new UnoTUI(controller)
+    val tui = new UnoTUI(using controller)
     GameBoard.addObserver(tui)
 
     UnoGame.inputLoop(tui)

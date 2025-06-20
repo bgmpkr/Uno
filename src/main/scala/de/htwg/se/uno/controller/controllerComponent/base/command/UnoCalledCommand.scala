@@ -4,7 +4,7 @@ import de.htwg.se.uno.controller.controllerComponent.ControllerInterface
 import de.htwg.se.uno.model.gameComponent.GameStateInterface
 import de.htwg.se.uno.util.Command
 
-case class UnoCalledCommand(gameBoard: ControllerInterface) extends Command {
+case class UnoCalledCommand(dummy: Unit = ()) (using gameBoard: ControllerInterface) extends Command {
   private var previousState: Option[GameStateInterface] = None
 
   override def execute(): Unit = {
