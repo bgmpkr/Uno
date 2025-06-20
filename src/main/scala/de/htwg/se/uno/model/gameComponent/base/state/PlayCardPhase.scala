@@ -1,11 +1,12 @@
 package de.htwg.se.uno.model.gameComponent.base.state
 
+import com.google.inject.Inject
 import de.htwg.se.uno.model.*
 import de.htwg.se.uno.model.cardComponent.{ActionCard, Card, WildCard}
 import de.htwg.se.uno.model.gameComponent.GameStateInterface
 import de.htwg.se.uno.model.gameComponent.base.GameState
 
-case class PlayCardPhase(context: UnoPhases, card: Card) extends GamePhase {
+case class PlayCardPhase @Inject() (context: UnoPhases, card: Card) extends PlayCardPhaseI {
 
   override def playCard(): GamePhase = {
     context.gameState = context.gameState.playCard(card)

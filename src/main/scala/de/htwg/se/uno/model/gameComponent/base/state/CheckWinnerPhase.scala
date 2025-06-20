@@ -1,6 +1,8 @@
 package de.htwg.se.uno.model.gameComponent.base.state
 
-case class CheckWinnerPhase(context: UnoPhases) extends GamePhase {
+import com.google.inject.Inject
+
+case class CheckWinnerPhase @Inject() (context: UnoPhases) extends CheckWinnerPhaseI {
   override def checkForWinner(): GamePhase = {
     context.gameState.checkForWinner() match {
       case Some(_) =>

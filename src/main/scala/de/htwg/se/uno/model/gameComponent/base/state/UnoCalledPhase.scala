@@ -1,6 +1,8 @@
 package de.htwg.se.uno.model.gameComponent.base.state
 
-case class UnoCalledPhase(context: UnoPhases) extends GamePhase {
+import com.google.inject.Inject
+
+case class UnoCalledPhase @Inject() (context: UnoPhases) extends UnoCalledPhaseI {
   override def playerSaysUno(): GamePhase = {
     val idx = context.gameState.currentPlayerIndex
     context.gameState = context.gameState.playerSaysUno(idx)

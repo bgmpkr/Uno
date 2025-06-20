@@ -1,6 +1,8 @@
 package de.htwg.se.uno.model.gameComponent.base.state
 
-case class GameOverPhase() extends GamePhase {
+import com.google.inject.Inject
+
+case class GameOverPhase @Inject() () extends GameOverPhaseI {
   override def playCard(): GamePhase = this
 
   override def drawCard(): GamePhase = this
