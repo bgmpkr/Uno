@@ -11,7 +11,7 @@ import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.scene.paint.Color.*
 import scalafx.scene.paint.*
 
-class UnoGUI(using controller: ControllerInterface) extends JFXApp3 with Observer {
+class UnoGUI(controller: ControllerInterface) extends JFXApp3 with Observer {
 
   override def update(): Unit = {
     println("Observer update called: Gamestate changed.")
@@ -25,7 +25,7 @@ class UnoGUI(using controller: ControllerInterface) extends JFXApp3 with Observe
       scene = new Scene {
         fill = Color.rgb(40, 40, 40)
         content = StartScreen(() => {
-          stage.scene().root = SetupScreen(stage) (using controller)
+          stage.scene().root = SetupScreen(stage, controller)
         })
       }
     }

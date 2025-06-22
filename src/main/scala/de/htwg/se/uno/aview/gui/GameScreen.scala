@@ -2,7 +2,7 @@ package de.htwg.se.uno.aview.gui
 
 import de.htwg.se.uno.controller.controllerComponent.ControllerInterface
 import de.htwg.se.uno.controller.controllerComponent.base.command.{DrawCardCommand, PlayCardCommand, UnoCalledCommand}
-import de.htwg.se.uno.model.cardComponent.{ActionCard, Card, CardFactory, NumberCard, WildCard}
+import de.htwg.se.uno.model.cardComponent.{ActionCard, Card, CardFactory, CardFactoryImpl, NumberCard, WildCard}
 import de.htwg.se.uno.model.gameComponent.base.GameState
 import de.htwg.se.uno.model.playerComponent.PlayerHand
 import scalafx.animation.{FadeTransition, PauseTransition}
@@ -21,11 +21,12 @@ import scalafx.scene.effect.DropShadow
 
 import scala.util.{Failure, Success}
 
-class GameScreen(players: Int, cardsPerPlayer: Int) (using gameBoard: ControllerInterface) extends StackPane {
+class GameScreen(players: Int, cardsPerPlayer: Int, gameBoard: ControllerInterface,
+                 screenFactory: ScreenFactory) extends StackPane {
   private var unoCaller: Option[Int] = None
   private var gameOver: Boolean = false
 
-  val allCards: List[Card] = CardFactory.createFullDeck()
+  val allCards: List[Card] = screenFactory.allCards
   private val hands = allCards.grouped(cardsPerPlayer).take(players).map(cards => PlayerHand(cards)).toList
   private val usedCards = hands.flatMap(_.cards)
   private val remainingDeck = allCards.diff(usedCards)
@@ -94,7 +95,7 @@ class GameScreen(players: Int, cardsPerPlayer: Int) (using gameBoard: Controller
     pickOnBounds = true
     onMouseClicked = (e: MouseEvent) => {
       println("Draw pile clicked!")
-      gameBoard.executeCommand(DrawCardCommand()(using gameBoard))
+      gameBoard.executeCommand(DrawCardCommand(gameBoard))
       update()
       e.consume()
     }
@@ -103,7 +104,7 @@ class GameScreen(players: Int, cardsPerPlayer: Int) (using gameBoard: Controller
   private val drawButton = new Button("Draw") {
     style = buttonStyle
     onAction = _ => {
-      gameBoard.executeCommand(DrawCardCommand()(using gameBoard))
+      gameBoard.executeCommand(DrawCardCommand(gameBoard))
       update()
     }
   }
@@ -111,7 +112,7 @@ class GameScreen(players: Int, cardsPerPlayer: Int) (using gameBoard: Controller
   private val unoButton = new Button("UNO!") {
     style = buttonStyle
     onAction = _ => {
-      gameBoard.executeCommand(UnoCalledCommand()(using gameBoard))
+      gameBoard.executeCommand(UnoCalledCommand(gameBoard))
       unoCaller = gameBoard.gameState.toOption.map(_.currentPlayerIndex)
       update()
     }
@@ -308,7 +309,7 @@ class GameScreen(players: Int, cardsPerPlayer: Int) (using gameBoard: Controller
           case wc: WildCard =>
             showColorPickerDialog(wc)
           case _ =>
-            gameBoard.executeCommand(PlayCardCommand(card, None) (using gameBoard))
+            gameBoard.executeCommand(PlayCardCommand(card, None, gameBoard))
             update()
 
             val pause = new PauseTransition(Duration(400))
@@ -320,7 +321,7 @@ class GameScreen(players: Int, cardsPerPlayer: Int) (using gameBoard: Controller
                   if (!isValid) {
                     Platform.runLater {
                       gameBoard.undoCommand()
-                      gameBoard.executeCommand(DrawCardCommand()(using gameBoard))
+                      gameBoard.executeCommand(DrawCardCommand(gameBoard))
                       update()
                       showInvalidMoveMessage()
                     }
@@ -376,7 +377,7 @@ class GameScreen(players: Int, cardsPerPlayer: Int) (using gameBoard: Controller
   private def playWildCard(wildCard: WildCard, color: String): Unit = {
     println(s"Playing wildcard with color: $color")
 
-    gameBoard.executeCommand(PlayCardCommand(wildCard, Some(color)) (using gameBoard))
+    gameBoard.executeCommand(PlayCardCommand(wildCard, Some(color), gameBoard))
     gameBoard.gameState match {
       case Success(newState) =>
         println(s"Wildcard played successfully, new player index: ${newState.currentPlayerIndex}")

@@ -262,7 +262,7 @@ case class GameState @Inject() (
             val chooseColor = selectedColor
 
             val isValid = isValidPlay(card, topCard)
-            val command = PlayCardCommand(card, chooseColor) (using gameBoard)
+            val command = PlayCardCommand(card, chooseColor, gameBoard)
 
             gameBoard.executeCommand(command)
 

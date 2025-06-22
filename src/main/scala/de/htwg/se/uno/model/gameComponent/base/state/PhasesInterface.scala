@@ -1,11 +1,13 @@
 package de.htwg.se.uno.model.gameComponent.base.state
 
+import de.htwg.se.uno.model.cardComponent.Card
+
 trait CheckWinnerPhaseI extends GamePhase {
   def checkForWinner(): GamePhase
 }
 
 trait ColorWishPhaseI extends GamePhase {
-  def playCard(): GamePhase
+  def playCard(card: Card): GamePhase
 }
 
 trait DrawCardPhaseI extends GamePhase {
@@ -15,8 +17,8 @@ trait DrawCardPhaseI extends GamePhase {
 trait GameOverPhaseI extends GamePhase
 
 trait PlayCardPhaseI extends GamePhase {
-  def playCard(): GamePhase
-  def isValidPlay: Boolean
+  def playCard(card: Card): GamePhase
+  def isValidPlay(card: Card): Boolean
 }
 
 trait PlayerTurnPhaseI extends GamePhase {

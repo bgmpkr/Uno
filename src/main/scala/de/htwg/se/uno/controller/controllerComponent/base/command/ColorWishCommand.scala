@@ -5,7 +5,7 @@ import de.htwg.se.uno.model.*
 import de.htwg.se.uno.model.gameComponent.GameStateInterface
 import de.htwg.se.uno.util.Command
 
-case class ColorWishCommand(color: String) (using gameBoard: ControllerInterface) extends Command {
+case class ColorWishCommand(color: String, gameBoard: ControllerInterface) extends Command {
 
   private var previousState: Option[GameStateInterface] = None
 

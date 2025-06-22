@@ -45,7 +45,7 @@ object UnoGame {
     GameBoard.gameState match {
       case scala.util.Success(initialGameState) =>
         val controller = GameBoard
-        val tui = new UnoTUI(using controller)
+        val tui = new UnoTUI(controller)
         tui.display()
         inputLoop(tui)
         tui
@@ -93,7 +93,7 @@ object UnoGame {
         val currentPlayer = currentState.players(currentState.currentPlayerIndex)
 
         if (currentPlayer.cards.length == 1 && !currentPlayer.hasSaidUno) {
-          GameBoard.executeCommand(UnoCalledCommand()(using GameBoard))
+          GameBoard.executeCommand(UnoCalledCommand(GameBoard))
           println(s"$name said UNO!")
         }
 
