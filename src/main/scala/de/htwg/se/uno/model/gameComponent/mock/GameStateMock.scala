@@ -42,8 +42,8 @@ case class GameStateMock( override val players: List[PlayerHand] = List.fill(2)(
     (this.copy(), dummyCard)
   }
 
-  override def inputHandler(input: String, gameBoard: ControllerInterface): InputResult = {
-    Success(this)
+  override def inputHandler(input: String) (using gameBoard: ControllerInterface): InputResult = {
+    Success()(using this)
   }
 7
   override def notifyObservers(): Unit = {

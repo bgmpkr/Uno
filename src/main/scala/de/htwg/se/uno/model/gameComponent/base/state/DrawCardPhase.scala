@@ -1,8 +1,6 @@
 package de.htwg.se.uno.model.gameComponent.base.state
 
-import com.google.inject.Inject
-
-case class DrawCardPhase @Inject() (context: UnoPhases) extends DrawCardPhaseI {
+case class DrawCardPhase (context: UnoPhases) extends DrawCardPhaseI {
   override def playCard(): GamePhase = this
   override def drawCard(): GamePhase = {
     val currentPlayer = context.gameState.players(context.gameState.currentPlayerIndex)

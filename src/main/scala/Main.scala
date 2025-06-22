@@ -8,6 +8,7 @@ import scala.concurrent.Future
 
 object Main {
   def main(args: Array[String]): Unit = {
+
     val controller = GameBoard
 
     val gui =  new UnoGUI(using controller)

@@ -1,8 +1,6 @@
 package de.htwg.se.uno.model.gameComponent.base.state
 
-import com.google.inject.Inject
-
-case class ColorWishPhase @Inject() (context: UnoPhases) extends CheckWinnerPhaseI {
+case class ColorWishPhase (context: UnoPhases) extends ColorWishPhaseI {
   override def playCard(): GamePhase = {
     context.setState(PlayerTurnPhase(context))
     context.state

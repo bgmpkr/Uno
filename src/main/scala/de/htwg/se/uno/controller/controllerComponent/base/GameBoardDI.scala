@@ -8,7 +8,7 @@ import de.htwg.se.uno.util.Command
 
 import scala.util.Try
 
-class GameBoardDI @Inject() extends ControllerInterface {
+class GameBoardDI extends ControllerInterface {
 
   def initGame(state: GameStateInterface): Unit = GameBoard.initGame(state)
 

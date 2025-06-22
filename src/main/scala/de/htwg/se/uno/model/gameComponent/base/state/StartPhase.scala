@@ -1,9 +1,8 @@
 package de.htwg.se.uno.model.gameComponent.base.state
 
-import com.google.inject.Inject
 import de.htwg.se.uno.model.*
 
-case class StartPhase @Inject() (context: UnoPhases) extends StartPhaseI {
+case class StartPhase (context: UnoPhases) extends StartPhaseI {
   override def playCard(): GamePhase = this
   override def drawCard(): GamePhase = this
   override def nextPlayer(): GamePhase = this

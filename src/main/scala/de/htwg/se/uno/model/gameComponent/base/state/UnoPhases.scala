@@ -2,7 +2,7 @@ package de.htwg.se.uno.model.gameComponent.base.state
 
 import de.htwg.se.uno.model.gameComponent.GameStateInterface
 
-class UnoPhases(var gameState: GameStateInterface) {
+class UnoPhases (using var gameState: GameStateInterface) {
   private var currentState: GamePhase = StartPhase(this)
 
   def setState(state: GamePhase): Unit = currentState = state

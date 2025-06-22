@@ -26,7 +26,7 @@ trait GameStateInterface (
   def isValidPlay(card: Card, topCard: Option[Card], selectedColor: Option[String] = None): Boolean
   def drawCardAndReturnDrawn(): (GameStateInterface, Card)
   def setSelectedColor(color: String): GameStateInterface
-  def inputHandler(input: String, gameBoard: ControllerInterface): InputResult
+  def inputHandler(input: String) (gameBoard: ControllerInterface): InputResult
   def copyWithIsReversed(isReversed: Boolean): GameStateInterface
   def copyWithSelectedColor(selectedColor: Option[String]): GameStateInterface
   def copyWithPlayersAndPiles(players: List[PlayerHand], drawPile: List[Card],

@@ -13,7 +13,7 @@ import de.htwg.se.uno.model.gameComponent.base.state.{GameOverPhase, GamePhase, 
 
 import scala.util.Try
 
-case class GameState @Inject() (
+case class GameState (
      override val players: List[PlayerHand], override val currentPlayerIndex: Int,
      override val allCards: List[Card], override val isReversed: Boolean = false,
      override val discardPile: List[Card], override val drawPile: List[Card],
@@ -228,7 +228,7 @@ case class GameState @Inject() (
     this.copy(selectedColor = Some(color))
   }
 
-  def inputHandler(input: String, gameBoard: ControllerInterface): InputResult = {
+  def inputHandler(input: String) (using gameBoard: ControllerInterface): InputResult = {
     val currentPlayer = players(currentPlayerIndex)
 
     input match {
@@ -241,7 +241,7 @@ case class GameState @Inject() (
                 val updatedGame =
                   setSelectedColor(color)
                   playCard(playedCard)
-                Success(updatedGame)
+                Success()(using updatedGame)
 
               case _ =>
                 Failure("Selected card is not a wild card.")
@@ -282,7 +282,7 @@ case class GameState @Inject() (
               }
             } else {
               gameBoard.gameState match {
-                case scala.util.Success(state) => Success(state)
+                case scala.util.Success(state) => Success()(using state)
                 case scala.util.Failure(_) => Failure("Game state not initialized.")
               }
             }

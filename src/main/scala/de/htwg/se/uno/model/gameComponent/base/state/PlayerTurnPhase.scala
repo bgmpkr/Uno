@@ -1,8 +1,6 @@
 package de.htwg.se.uno.model.gameComponent.base.state
 
-import com.google.inject.Inject
-
-case class PlayerTurnPhase @Inject() (context: UnoPhases) extends PlayerTurnPhaseI {
+case class PlayerTurnPhase (context: UnoPhases) extends PlayerTurnPhaseI {
   override def nextPlayer(): GamePhase = {
     context.gameState = context.gameState.nextPlayer()
     context.state
