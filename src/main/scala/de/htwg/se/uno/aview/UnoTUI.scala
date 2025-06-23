@@ -54,7 +54,6 @@ class UnoTUI(controller: ControllerInterface) extends Observer {
       case scala.util.Failure(exception: Throwable) =>
         println(s"Game state not initialized: $exception")
     }
-
   }
 
   def handleInput(input: String): Unit = {
@@ -64,23 +63,28 @@ class UnoTUI(controller: ControllerInterface) extends Observer {
 
         input match {
           case "draw" =>
-            val (newState, drawnCard) = state.drawCardAndReturnDrawn()
-            println(s"You drew: $drawnCard")
+            state.drawCardAndReturnDrawn() match {
+              case (newState, Some(drawnCard)) =>
+                println(s"You drew: $drawnCard")
 
-            if (newState.isValidPlay(drawnCard, newState.discardPile.headOption, newState.selectedColor)) {
-              println("Playing drawn card...")
-              GameBoard.updateState(newState)
+                if (newState.isValidPlay(drawnCard, newState.discardPile.headOption, newState.selectedColor)) {
+                  println("Playing drawn card...")
+                  GameBoard.updateState(newState)
 
-              val chosenColor = None
-                if (drawnCard.isInstanceOf[WildCard]) Some(chooseWildColor())
-                else None
+                  val chosenColor = None
+                    if (drawnCard.isInstanceOf[WildCard]) Some(chooseWildColor())
+                    else None
 
-              GameBoard.executeCommand(PlayCardCommand(drawnCard, chosenColor, GameBoard))
-            } else {
-              println("Card cannot be played, turn ends.")
-              val skipped = newState.nextPlayer()
-              GameBoard.updateState(skipped)
-              skipped.notifyObservers()
+                  GameBoard.executeCommand(PlayCardCommand(drawnCard, chosenColor, GameBoard))
+                } else {
+                  println("Card cannot be played, turn ends.")
+                  val skipped = newState.nextPlayer()
+                  GameBoard.updateState(skipped)
+                  skipped.notifyObservers()
+                }
+
+              case (_, None) =>
+                println("❌ No card could be drawn.")
             }
 
           case "undo" =>
@@ -98,7 +102,7 @@ class UnoTUI(controller: ControllerInterface) extends Observer {
                   else None
 
                 GameBoard.executeCommand(PlayCardCommand(chosenCard, chosenColor, GameBoard))
-                
+
               case scala.util.Success(_) =>
                 println(s"Invalid index.")
 
@@ -107,8 +111,8 @@ class UnoTUI(controller: ControllerInterface) extends Observer {
             }
         }
 
-        checkUno()
-        checkForWinner()
+      checkUno()
+      checkForWinner()
 
       case scala.util.Failure(exception: Throwable) =>
         println(s"Game state not initialized: $exception")

@@ -20,11 +20,11 @@ trait GameStateInterface (
   def checkForWinner(): Option[Int]
   def playerSaysUno(playerIndex: Int): GameStateInterface
   def drawCard(playerHand: PlayerHand, drawPile: List[Card], discardPile: List[Card]):
-  (Card, PlayerHand, List[Card], List[Card])
+  (Option[Card], PlayerHand, List[Card], List[Card])
   def playCard(card: Card, chosenColor: Option[String] = None): GameStateInterface
   def handleDrawCards(count: Int): GameStateInterface
   def isValidPlay(card: Card, topCard: Option[Card], selectedColor: Option[String] = None): Boolean
-  def drawCardAndReturnDrawn(): (GameStateInterface, Card)
+  def drawCardAndReturnDrawn(): (GameStateInterface, Option[Card])
   def setSelectedColor(color: String): GameStateInterface
   def inputHandler(input: String, gameBoard: ControllerInterface): InputResult
   def copyWithIsReversed(isReversed: Boolean): GameStateInterface

@@ -17,7 +17,7 @@ class UnoPhases @Inject() (var gameState: GameStateInterface) {
   def checkForWinner(): Unit = currentState = currentState.checkForWinner()
   def playerSaysUno(): Unit = currentState = currentState.playerSaysUno()
   def tryPlayCard(card: Card): Unit = {
-    if (currentState.isValidPlay(card: Card)) currentState = currentState.playCard(card: Card)
+    if (currentState.isValidPlay(card)) currentState = currentState.playCard(card: Card)
     else println("Invalid play.")
   }
   

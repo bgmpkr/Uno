@@ -6,7 +6,7 @@ import de.htwg.se.uno.controller.controllerComponent.ControllerInterface
 import net.codingwell.scalaguice.ScalaModule
 import de.htwg.se.uno.model.gameComponent.GameStateInterface
 import de.htwg.se.uno.model.gameComponent.base.GameState
-import de.htwg.se.uno.controller.controllerComponent.base.{GameBoard, GameBoardDI}
+import de.htwg.se.uno.controller.controllerComponent.base.GameBoardDI
 import de.htwg.se.uno.model.cardComponent.{Card, CardFactory, CardFactoryImpl}
 import de.htwg.se.uno.model.gameComponent.base.state.*
 import de.htwg.se.uno.model.playerComponent.PlayerHand
@@ -18,13 +18,30 @@ class UnoModule extends AbstractModule with ScalaModule {
 
     @Provides
     def provideGameState(): GameStateInterface = {
+      val cardFactory = new CardFactoryImpl
+      val fullDeck = cardFactory.createFullDeck()
+      val shuffleDeck = scala.util.Random.shuffle(fullDeck)
+
+      val cardsPerPlayer = 7
+      val numPlayers = 2
+      val totalCardsNeeded = cardsPerPlayer * numPlayers + 1 // +1 für die erste Karte im Ablagestapel
+
+      if (shuffleDeck.size < totalCardsNeeded) {
+        throw new IllegalStateException(s"Not enough cards in deck: ${shuffleDeck.size} < $totalCardsNeeded")
+      }
+
+      val (player1Cards, rest1) = shuffleDeck.splitAt(cardsPerPlayer)
+      val (player2Cards, rest2) = rest1.splitAt(cardsPerPlayer)
+      val (topDiscard, rest3) = rest2.splitAt(1)
+
       GameState(
-        players = List.empty,
-        allCards = List.empty,
+        players = List(PlayerHand(cards = player1Cards, hasSaidUno = false),
+          PlayerHand(cards = player2Cards, hasSaidUno = false)),
+        allCards = shuffleDeck,
         currentPlayerIndex = 0,
         isReversed = false,
-        discardPile = List.empty,
-        drawPile = List.empty,
+        discardPile = topDiscard,
+        drawPile = rest3,
         selectedColor = None,
         currentPhase = None
       )

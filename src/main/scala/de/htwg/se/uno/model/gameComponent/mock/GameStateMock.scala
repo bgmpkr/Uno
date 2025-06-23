@@ -37,15 +37,15 @@ case class GameStateMock( override val players: List[PlayerHand] = List.fill(2)(
 
   override def isValidPlay(card: Card, topCard: Option[Card], selectedColor: Option[String]): Boolean = true
 
-  override def drawCardAndReturnDrawn(): (GameStateMock, Card) = {
+  override def drawCardAndReturnDrawn(): (GameStateMock, Option[Card]) = {
     val dummyCard = WildCard("wild")
-    (this.copy(), dummyCard)
+    (this.copy(), Some(dummyCard))
   }
 
   override def inputHandler(input: String, gameBoard: ControllerInterface): InputResult = {
     Success(this)
   }
-7
+
   override def notifyObservers(): Unit = {
     this.notifyObservers()
   }
@@ -59,7 +59,7 @@ case class GameStateMock( override val players: List[PlayerHand] = List.fill(2)(
   }
 
   override def drawCard(playerHand: PlayerHand, drawPile: List[Card], discardPile: List[Card]):
-  (Card, PlayerHand, List[Card], List[Card]) = {
+  (Option[Card], PlayerHand, List[Card], List[Card]) = {
     this.drawCard(playerHand, drawPile, discardPile)
   }
 
