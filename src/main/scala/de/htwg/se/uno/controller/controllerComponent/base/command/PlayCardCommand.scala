@@ -57,6 +57,8 @@ case class PlayCardCommand(card: Card, chooseColor: Option[String] = None) (usin
   override def undo(): Unit = {
     previousState.foreach { oldState =>
       gameBoard.updateState(oldState)
+      // einfügen für Karten zurück nehmen?
+      //oldState.notifyObservers()
     }
   }
 

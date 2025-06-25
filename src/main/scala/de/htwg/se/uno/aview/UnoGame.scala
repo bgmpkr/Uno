@@ -106,7 +106,7 @@ object UnoGame {
           case _ =>
             tui.handleInput(input)
 
-            tui.display()
+            //tui.display()
             inputLoop(tui)
         }
 
