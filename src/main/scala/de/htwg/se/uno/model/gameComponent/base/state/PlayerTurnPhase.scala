@@ -32,8 +32,6 @@ case class PlayerTurnPhase @Inject() (context: UnoPhases) extends PlayerTurnPhas
     }
     this
   }
-  override def playCard(card: Card): GamePhase = this
-  override def drawCard(): GamePhase = this
   override def dealInitialCards(): GamePhase = this
   override def checkForWinner(): GamePhase = this
   override def playerSaysUno(): GamePhase = this

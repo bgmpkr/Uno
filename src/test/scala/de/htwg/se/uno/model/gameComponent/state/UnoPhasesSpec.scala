@@ -1,5 +1,6 @@
 package de.htwg.se.uno.model.gameComponent.state
 
+import de.htwg.se.uno.model.cardComponent.NumberCard
 import de.htwg.se.uno.model.gameComponent.base.GameState
 import de.htwg.se.uno.model.gameComponent.base.state.{GamePhase, UnoPhases}
 import org.scalatest.matchers.should.Matchers
@@ -25,9 +26,10 @@ class UnoPhasesSpec extends AnyWordSpec with Matchers {
             val gameState = GameState(List(), 0, List(), false, List(), List())
             val unoStates = new UnoPhases(gameState)
             val dummy = new DummyState
+            val dummyCard = NumberCard("green", 5)
             unoStates.setState(dummy)
 
-            unoStates.playCard()
+            unoStates.playCard(dummyCard)
             unoStates.state shouldBe dummy
         }
 
@@ -84,7 +86,8 @@ class UnoPhasesSpec extends AnyWordSpec with Matchers {
         "tryPlayCard calls playCard if isValidPlay is true" in {
             val gameState = GameState(List(), 0, List(), false, List(), List())
             val unoStates = new UnoPhases(gameState)
-          
+
+            val dummyCard = NumberCard("green", 5)
             var played = false
             val dummy = new DummyState {
                 override def playCard(): GamePhase = {
@@ -94,7 +97,7 @@ class UnoPhasesSpec extends AnyWordSpec with Matchers {
             }
 
             unoStates.setState(dummy)
-            unoStates.tryPlayCard()
+            unoStates.tryPlayCard(dummyCard)
             played shouldBe true
         }
 
@@ -102,6 +105,7 @@ class UnoPhasesSpec extends AnyWordSpec with Matchers {
             val gameState = GameState(List(), 0, List(), false, List(), List())
             val unoStates = new UnoPhases(gameState)
 
+            val dummyCard = NumberCard("green", 5)
             val dummy = new DummyState {
                 override def isValidPlay: Boolean = false
             }
@@ -111,7 +115,7 @@ class UnoPhasesSpec extends AnyWordSpec with Matchers {
 
             val outStream = new ByteArrayOutputStream()
             Console.withOut(new PrintStream(outStream)) {
-                unoStates.tryPlayCard()
+                unoStates.tryPlayCard(dummyCard)
             }
 
             outStream.toString should include ("Invalid play.")

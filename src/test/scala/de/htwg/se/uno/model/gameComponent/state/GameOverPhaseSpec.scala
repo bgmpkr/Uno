@@ -1,5 +1,6 @@
 package de.htwg.se.uno.model.gameComponent.state
 
+import de.htwg.se.uno.model.cardComponent.NumberCard
 import de.htwg.se.uno.model.gameComponent.base.GameState
 import de.htwg.se.uno.model.gameComponent.base.state.{GameOverPhase, UnoPhases}
 import org.scalatest.matchers.should.Matchers
@@ -14,7 +15,8 @@ class GameOverPhaseSpec extends AnyWordSpec with Matchers {
     val gameOverState = GameOverPhase()
 
     "return this on playCard" in {
-      gameOverState.playCard() shouldBe gameOverState
+      val dummyCard = NumberCard("green", 5)
+      gameOverState.playCard(dummyCard) shouldBe gameOverState
     }
 
     "return this on drawCard" in {
@@ -38,7 +40,8 @@ class GameOverPhaseSpec extends AnyWordSpec with Matchers {
     }
 
     "have isValidPlay false" in {
-      gameOverState.isValidPlay shouldBe false
+      val dummyCard = NumberCard("green", 5)
+      gameOverState.isValidPlay(dummyCard) shouldBe false
     }
   }
 }

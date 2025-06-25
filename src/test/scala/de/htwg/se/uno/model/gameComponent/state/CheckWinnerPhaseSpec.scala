@@ -65,9 +65,10 @@ class CheckWinnerPhaseSpec extends AnyWordSpec with Matchers {
       val gameState = new GameStateWithoutWinner(List())
       val unoStates = new UnoPhases(gameState)
       val checkWinnerState = CheckWinnerPhase(unoStates)
+      val dummyCard = NumberCard("green", 5)
       unoStates.setState(checkWinnerState)
 
-      val result = checkWinnerState.playCard()
+      val result = checkWinnerState.playCard(dummyCard)
       result shouldBe checkWinnerState
     }
 
@@ -114,10 +115,11 @@ class CheckWinnerPhaseSpec extends AnyWordSpec with Matchers {
     "return false for isValidPlay" in {
       val gameState = new GameStateWithoutWinner(List())
       val unoStates = new UnoPhases(gameState)
+      val dummyCard = NumberCard("green", 5)
       val checkWinnerState = CheckWinnerPhase(unoStates)
       unoStates.setState(checkWinnerState)
 
-      checkWinnerState.isValidPlay shouldBe false
+      checkWinnerState.isValidPlay(dummyCard) shouldBe false
     }
   }
 }

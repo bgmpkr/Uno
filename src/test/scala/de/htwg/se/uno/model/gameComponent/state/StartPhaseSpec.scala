@@ -17,7 +17,8 @@ class StartPhaseSpec extends AnyWordSpec with Matchers {
       }
       val unoStates = new UnoPhases(dummyGameState)
       val startState = StartPhase(unoStates)
-      startState.playCard() shouldBe startState
+      val dummyCard = NumberCard("green", 5)
+      startState.playCard(dummyCard) shouldBe startState
     }
 
     "return this on drawCard" in {
@@ -73,7 +74,8 @@ class StartPhaseSpec extends AnyWordSpec with Matchers {
       val dummyGameState = new GameState(List(), 0, List(), false, List(), List())
       val unoStates = new UnoPhases(dummyGameState)
       val startState = StartPhase(unoStates)
-      startState.isValidPlay shouldBe false
+      val dummyCard = NumberCard("green", 5)
+      startState.isValidPlay(dummyCard) shouldBe false
     }
   }
 }

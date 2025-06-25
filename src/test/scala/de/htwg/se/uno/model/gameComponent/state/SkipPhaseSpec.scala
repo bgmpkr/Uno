@@ -3,6 +3,7 @@ package de.htwg.se.uno.model.gameComponent.state
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import de.htwg.se.uno.model.*
+import de.htwg.se.uno.model.cardComponent.NumberCard
 import de.htwg.se.uno.model.gameComponent.base.GameState
 import de.htwg.se.uno.model.gameComponent.base.state.{SkipPhase, UnoPhases}
 
@@ -32,7 +33,8 @@ class SkipPhaseSpec extends AnyWordSpec with Matchers {
       val dummyGameState = new GameState(List(), 0, List(), false, List(), List())
       val unoStates = new UnoPhases(dummyGameState)
       val skipState = SkipPhase(unoStates)
-      skipState.playCard() shouldBe skipState
+      val dummyCard = NumberCard("green", 5)
+      skipState.playCard(dummyCard) shouldBe skipState
     }
 
     "return this on drawCard" in {
@@ -67,7 +69,8 @@ class SkipPhaseSpec extends AnyWordSpec with Matchers {
       val dummyGameState = new GameState(List(), 0, List(), false, List(), List())
       val unoStates = new UnoPhases(dummyGameState)
       val skipState = SkipPhase(unoStates)
-      skipState.isValidPlay shouldBe false
+      val dummyCard = NumberCard("green", 5)
+      skipState.isValidPlay(dummyCard) shouldBe false
     }
   }
 }

@@ -14,15 +14,15 @@ class GamePhaseJsonFormatSpec extends AnyWordSpec with Matchers {
   val dummyCard: Card = NumberCard("red", 1)
   val dummyHand: PlayerHand = PlayerHand(List(dummyCard))
 
-  val dummyGameState: GameStateInterface = new GameStateInterface {
-    override val players: List[PlayerHand] = List(PlayerHand(List(NumberCard("red", 1))))
-    override val currentPlayerIndex: Int = 0
-    override val allCards: List[Card] = players.flatMap(_.cards)
-    override val isReversed: Boolean = false
-    override val discardPile: List[Card] = List(NumberCard("red", 1))
-    override val drawPile: List[Card] = List(NumberCard("blue", 2))
-    override val selectedColor: Option[String] = Some("red")
-    val currentPhase: Option[GamePhase] = None
+  val dummyGameState: GameStateInterface = new GameStateInterface(List(PlayerHand(List(NumberCard("red", 1)))),
+    0,                                             // currentPlayerIndex
+    List(NumberCard("red", 1)),                    // allCards
+    false,                                         // isReversed
+    List(NumberCard("red", 1)),                    // discardPile
+    List(NumberCard("blue", 2)),                   // drawPile
+    Some("red"),                                   // selectedColor
+    None                                           // currentPhase
+  ) {
 
     override def drawCard(player: PlayerHand, drawPile: List[Card], discardPile: List[Card]):
     (NumberCard, PlayerHand, List[Card], List[Card]) = (NumberCard("yellow", 3), player, drawPile, discardPile)
@@ -48,7 +48,7 @@ class GamePhaseJsonFormatSpec extends AnyWordSpec with Matchers {
   }
 
 
-  object DummyContext extends UnoPhases(dummyGameState) {
+  val DummyContext: UnoPhases = new UnoPhases(dummyGameState) {
     override def setState(state: GamePhase): Unit = super.setState(state)
   }
 
@@ -62,7 +62,7 @@ class GamePhaseJsonFormatSpec extends AnyWordSpec with Matchers {
 
     "serialize PlayCardPhase correctly" in {
       val dummyCard = NumberCard("red", 1)
-      val phase = PlayCardPhase(DummyContext, dummyCard)
+      val phase = PlayCardPhase(DummyContext)
       val json = Json.toJson(phase: GamePhase)
       json shouldBe JsString("PlayCardPhase")
     }
@@ -82,7 +82,7 @@ class GamePhaseJsonFormatSpec extends AnyWordSpec with Matchers {
 
     "deserialize PlayCardPhase correctly" in {
       val dummyCard = NumberCard("red", 1)
-      val phase = PlayCardPhase(DummyContext, dummyCard)
+      val phase = PlayCardPhase(DummyContext)
       val result = Json.toJson(phase: GamePhase)
       result shouldBe JsString("PlayCardPhase")
     }

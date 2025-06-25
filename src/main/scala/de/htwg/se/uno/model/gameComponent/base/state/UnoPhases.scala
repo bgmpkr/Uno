@@ -6,8 +6,6 @@ import de.htwg.se.uno.model.gameComponent.GameStateInterface
 
 class UnoPhases @Inject() (var gameState: GameStateInterface) {
   private var currentState: GamePhase = StartPhase(this)
-class UnoPhases(var gameState: GameStateInterface) {
-  private var currentState: GamePhase = _
 
   def init(): Unit = {
     currentState = StartPhase(this)

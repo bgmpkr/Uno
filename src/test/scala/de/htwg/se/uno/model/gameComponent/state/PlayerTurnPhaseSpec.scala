@@ -3,6 +3,7 @@ package de.htwg.se.uno.model.gameComponent.state
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import de.htwg.se.uno.model.*
+import de.htwg.se.uno.model.cardComponent.NumberCard
 import de.htwg.se.uno.model.gameComponent.base.GameState
 import de.htwg.se.uno.model.gameComponent.base.state.{PlayerTurnPhase, UnoPhases}
 import de.htwg.se.uno.model.gameComponent.base.state.*
@@ -29,7 +30,8 @@ class PlayerTurnPhaseSpec extends AnyWordSpec with Matchers {
     "return this on playCard" in {
       val unoStates = new UnoPhases(GameState(List(), 0, List(), false, List(), List()))
       val state = PlayerTurnPhase(unoStates)
-      state.playCard() shouldBe state
+      val dummyCard = NumberCard("green", 5)
+      state.playCard(dummyCard) shouldBe state
     }
 
     "return this on drawCard" in {
@@ -59,7 +61,8 @@ class PlayerTurnPhaseSpec extends AnyWordSpec with Matchers {
     "isValidPlay should be false" in {
       val unoStates = new UnoPhases(GameState(List(), 0, List(), false, List(), List()))
       val state = PlayerTurnPhase(unoStates)
-      state.isValidPlay shouldBe false
+      val dummyCard = NumberCard("green", 5)
+      state.isValidPlay(dummyCard) shouldBe false
     }
   }
 }

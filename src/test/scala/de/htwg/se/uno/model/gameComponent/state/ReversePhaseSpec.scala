@@ -3,6 +3,7 @@ package de.htwg.se.uno.model.gameComponent.state
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import de.htwg.se.uno.model.*
+import de.htwg.se.uno.model.cardComponent.NumberCard
 import de.htwg.se.uno.model.gameComponent.base.GameState
 import de.htwg.se.uno.model.gameComponent.base.state.{PlayerTurnPhase, ReversePhase, UnoPhases}
 import de.htwg.se.uno.model.playerComponent.PlayerHand
@@ -33,7 +34,8 @@ class ReversePhaseSpec extends AnyWordSpec with Matchers {
     "return this on playCard" in {
       val unoStates = new UnoPhases(GameState(Nil, 0, Nil, false, Nil, Nil))
       val reverseState = ReversePhase(unoStates)
-      reverseState.playCard() shouldBe reverseState
+      val dummyCard = NumberCard("green", 5)
+      reverseState.playCard(dummyCard) shouldBe reverseState
     }
 
     "return this on drawCard" in {
@@ -63,7 +65,8 @@ class ReversePhaseSpec extends AnyWordSpec with Matchers {
     "return false for isValidPlay" in {
       val unoStates = new UnoPhases(GameState(Nil, 0, Nil, false, Nil, Nil))
       val reverseState = ReversePhase(unoStates)
-      reverseState.isValidPlay shouldBe false
+      val dummyCard = NumberCard("green", 5)
+      reverseState.isValidPlay(dummyCard) shouldBe false
     }
   }
 }

@@ -50,9 +50,10 @@ class DrawCardPhaseSpec extends AnyWordSpec with Matchers {
 
     "return this on playCard" in {
       val dummyGameState = new GameState(List(), 0, List(), false, List(), List())
+      val dummyCard = NumberCard("green", 5)
       val unoStates = new UnoPhases(dummyGameState)
       val drawCardState = DrawCardPhase(unoStates)
-      drawCardState.playCard() shouldBe drawCardState
+      drawCardState.playCard(dummyCard) shouldBe drawCardState
     }
 
     "return this on nextPlayer" in {
@@ -87,7 +88,8 @@ class DrawCardPhaseSpec extends AnyWordSpec with Matchers {
       val dummyGameState = new GameState(List(), 0, List(), false, List(), List())
       val unoStates = new UnoPhases(dummyGameState)
       val drawCardState = DrawCardPhase(unoStates)
-      drawCardState.isValidPlay shouldBe false
+      val dummyCard = NumberCard("green", 5)
+      drawCardState.isValidPlay(dummyCard) shouldBe false
     }
   }
 }
