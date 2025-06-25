@@ -46,7 +46,7 @@ class UnoTUI(controller: ControllerInterface) extends Observer {
           println("No playable Card! You have to draw a card...")
           GameBoard.executeCommand(DrawCardCommand(controller))
           gameShouldExit = false
-          display()
+          return
         } else {
           println("Select a card (index) to play or type 'draw' to draw a card:")
         }
