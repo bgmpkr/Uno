@@ -1,6 +1,9 @@
 package de.htwg.se.uno.model.gameComponent.base.state
 
-case class CheckWinnerPhase(context: UnoPhases) extends GamePhase {
+import com.google.inject.Inject
+import de.htwg.se.uno.model.cardComponent.Card
+
+case class CheckWinnerPhase @Inject() (context: UnoPhases) extends CheckWinnerPhaseI {
   override def checkForWinner(): GamePhase = {
     context.gameState.checkForWinner() match {
       case Some(_) =>
@@ -10,10 +13,10 @@ case class CheckWinnerPhase(context: UnoPhases) extends GamePhase {
     }
     context.state
   }
-  override def playCard(): GamePhase = this
+  override def playCard(card: Card): GamePhase = this
   override def drawCard(): GamePhase = this
   override def nextPlayer(): GamePhase = this
   override def dealInitialCards(): GamePhase = this
   override def playerSaysUno(): GamePhase = this
-  override def isValidPlay: Boolean = false
+  override def isValidPlay(card: Card): Boolean = false
 }

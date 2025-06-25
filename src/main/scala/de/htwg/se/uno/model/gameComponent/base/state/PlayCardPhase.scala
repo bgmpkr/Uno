@@ -1,13 +1,14 @@
 package de.htwg.se.uno.model.gameComponent.base.state
 
+import com.google.inject.Inject
 import de.htwg.se.uno.model.*
 import de.htwg.se.uno.model.cardComponent.{ActionCard, Card, WildCard}
 import de.htwg.se.uno.model.gameComponent.GameStateInterface
 import de.htwg.se.uno.model.gameComponent.base.GameState
 
-case class PlayCardPhase(context: UnoPhases, card: Card) extends GamePhase {
+case class PlayCardPhase @Inject() (context: UnoPhases) extends PlayCardPhaseI {
 
-  override def playCard(): GamePhase = {
+  override def playCard(card: Card): GamePhase = {
     context.gameState = context.gameState.playCard(card)
     context.setState(PlayerTurnPhase(context))
 
@@ -85,7 +86,7 @@ case class PlayCardPhase(context: UnoPhases, card: Card) extends GamePhase {
     this
   }
 
-  override def isValidPlay: Boolean = {
+  override def isValidPlay(card: Card): Boolean = {
     val topCard = context.gameState.discardPile.lastOption
     context.gameState.isValidPlay(card, topCard, context.gameState.selectedColor)
   }

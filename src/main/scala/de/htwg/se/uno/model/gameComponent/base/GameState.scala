@@ -1,5 +1,6 @@
 package de.htwg.se.uno.model.gameComponent.base
 
+import com.google.inject.Inject
 import de.htwg.se.uno.controller.controllerComponent.ControllerInterface
 import de.htwg.se.uno.controller.controllerComponent.base.command.PlayCardCommand
 import de.htwg.se.uno.model.*
@@ -11,15 +12,22 @@ import de.htwg.se.uno.model.cardComponent.CardJsonFormat.*
 import de.htwg.se.uno.model.gameComponent.base.state.GamePhaseJsonFormat.*
 import de.htwg.se.uno.util.Observable
 import de.htwg.se.uno.model.gameComponent.GameStateInterface
-import de.htwg.se.uno.model.gameComponent.base.state.{GameOverPhase, GamePhase, UnoPhases}
+import de.htwg.se.uno.model.gameComponent.base.state.{GameOverPhase, GamePhase}
 
 import scala.util.Try
 
-case class GameState( players: List[PlayerHand], currentPlayerIndex: Int,
-                      allCards: List[Card], isReversed: Boolean = false,
-                      discardPile: List[Card], drawPile: List[Card], selectedColor: Option[String] = None,
-                      currentPhase: Option[GamePhase] = None)
-  extends Observable, GameStateInterface {
+case class GameState @Inject() (
+      override val players: List[PlayerHand], override val currentPlayerIndex: Int,
+      override val allCards: List[Card], override val isReversed: Boolean = false,
+      override val discardPile: List[Card], override val drawPile: List[Card],
+      override val selectedColor: Option[String] = None,
+      override val currentPhase: Option[GamePhase] = None
+  ) extends Observable, GameStateInterface(players: List[PlayerHand], currentPlayerIndex: Int,
+                              allCards: List[Card], isReversed: Boolean,
+                              discardPile: List[Card], drawPile: List[Card],
+                              selectedColor: Option[String],
+                              currentPhase: Option[GamePhase]
+  ){
 
   def nextPlayer(): GameStateInterface = {
     val playerCount = players.length
@@ -34,20 +42,27 @@ case class GameState( players: List[PlayerHand], currentPlayerIndex: Int,
 
   def dealInitialCards(cardsPerPlayer: Int): GameStateInterface = {
     var updatedGameState: GameStateInterface = this
-    for (_ <- 1 to cardsPerPlayer) {
+    for (cardNum <- 1 to cardsPerPlayer) {
       for (playerIndex <- updatedGameState.players.indices) {
         val (drawnCard, updatedHand, updatedDrawPile, updatedDiscardPile) =
           updatedGameState.drawCard(updatedGameState.players(playerIndex),
             updatedGameState.drawPile, updatedGameState.discardPile)
 
-        val updatedPlayers = updatedGameState.players.updated(playerIndex, updatedHand)
+        drawnCard match {
+          case Some(_) =>
+            val updatedPlayers = updatedGameState.players.updated(playerIndex, updatedHand)
 
-        updatedGameState = updatedGameState.copyWithPiles(updatedDrawPile, updatedDiscardPile)
-          .asInstanceOf[GameState]
-        
-        updatedGameState = updatedGameState match {
-          case gs: GameState => gs.copy(players = updatedPlayers)
-          case other => other
+            updatedGameState = updatedGameState.copyWithPiles(updatedDrawPile, updatedDiscardPile)
+              .asInstanceOf[GameState]
+
+            updatedGameState = updatedGameState match {
+              case gs: GameState => gs.copy(players = updatedPlayers)
+              case other => other
+            }
+
+          case None =>
+            println(s"⚠️ Could not deal card $cardNum to player $playerIndex - insufficient cards")
+            return updatedGameState
         }
       }
     }
@@ -84,13 +99,21 @@ case class GameState( players: List[PlayerHand], currentPlayerIndex: Int,
   }
 
   def drawCard(playerHand: PlayerHand, drawPile: List[Card], discardPile: List[Card]):
-  (Card, PlayerHand, List[Card], List[Card]) = {
+  (Option[Card], PlayerHand, List[Card], List[Card]) = {
+
+    if (drawPile.isEmpty && discardPile.size <= 1) {
+      println("❌ No cards available to draw!")
+      return (None, playerHand, drawPile, discardPile)
+    }
 
     val reshuffledDrawPile =
-      if (drawPile.isEmpty && discardPile.size > 1)
-        scala.util.Random.shuffle(discardPile.init)
-      else
+      if (drawPile.isEmpty && discardPile.size > 1) {
+        val shuffled = scala.util.Random.shuffle(discardPile.init)
+        println(s"🔄 Reshuffling discard pile: ${shuffled.size} cards")
+        shuffled
+      } else {
         drawPile
+      }
 
     val updatedDiscardPile =
       if (drawPile.isEmpty && discardPile.size > 1)
@@ -99,15 +122,15 @@ case class GameState( players: List[PlayerHand], currentPlayerIndex: Int,
         discardPile
 
     if (reshuffledDrawPile.isEmpty) {
-      println("❌ No cards available to draw!")
-      return (null.asInstanceOf[Card], playerHand, reshuffledDrawPile, updatedDiscardPile)
+      println("❌ No cards available to draw after reshuffling!")
+      return (None, playerHand, reshuffledDrawPile, updatedDiscardPile)
     }
 
     val drawnCard = reshuffledDrawPile.head
     val newDrawPile = reshuffledDrawPile.tail
     val updatedPlayerHand = playerHand + drawnCard
 
-    (drawnCard, updatedPlayerHand, newDrawPile, updatedDiscardPile)
+    (Some(drawnCard), updatedPlayerHand, newDrawPile, updatedDiscardPile)
   }
 
 
@@ -155,7 +178,7 @@ case class GameState( players: List[PlayerHand], currentPlayerIndex: Int,
     )
   }
 
-  def isValidPlay(card: Card, topCard: Option[Card], selectedColor: Option[String] = None): Boolean = {
+  override def isValidPlay(card: Card, topCard: Option[Card], selectedColor: Option[String] = None): Boolean = {
 
     selectedColor match {
       case Some(color) =>
@@ -201,24 +224,26 @@ case class GameState( players: List[PlayerHand], currentPlayerIndex: Int,
     }
   }
 
-  def drawCardAndReturnDrawn(): (GameStateInterface, Card) = {
-    val (card, updatedPlayer, newDrawPile, newDiscardPile) =
+  def drawCardAndReturnDrawn(): (GameStateInterface, Option[Card]) = {
+    val (maybeCard, updatedPlayer, newDrawPile, newDiscardPile) =
       drawCard(players(currentPlayerIndex), drawPile, discardPile)
 
-    if (card == null) {
-      println("⚠️ Card could not be drawn.")
-      return (this, null.asInstanceOf[Card])
+    maybeCard match {
+      case Some(card) =>
+        val updatedPlayers = players.updated(currentPlayerIndex, updatedPlayer)
+        val newState = this.copy(
+          drawPile = newDrawPile,
+          discardPile = newDiscardPile,
+          players = updatedPlayers
+        )
+        println(s"✅ Player $currentPlayerIndex drew: $card")
+        (newState, Some(card))
+
+      case None =>
+        println("⚠️ Card could not be drawn - no cards available.")
+        (this, None)
     }
-
-    val updatedPlayers = players.updated(currentPlayerIndex, updatedPlayer)
-    val newState = this.copy(
-      drawPile = newDrawPile,
-      discardPile = newDiscardPile,
-      players = updatedPlayers
-    )
-    (newState, card)
   }
-
 
   def setSelectedColor(color: String): GameStateInterface = {
     this.copy(selectedColor = Some(color))

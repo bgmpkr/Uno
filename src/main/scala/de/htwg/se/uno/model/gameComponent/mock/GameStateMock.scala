@@ -2,6 +2,7 @@ package de.htwg.se.uno.model.gameComponent.mock
 
 import de.htwg.se.uno.controller.controllerComponent.ControllerInterface
 import de.htwg.se.uno.model.cardComponent.{Card, WildCard}
+import de.htwg.se.uno.model.gameComponent.base.state.GamePhase
 import de.htwg.se.uno.model.playerComponent.PlayerHand
 import de.htwg.se.uno.model.gameComponent.{GameStateInterface, InputResult, Success}
 
@@ -11,8 +12,14 @@ case class GameStateMock( override val players: List[PlayerHand] = List.fill(2)(
                           override val isReversed: Boolean = false,
                           override val discardPile: List[Card] = List.empty,
                           override val drawPile: List[Card] = List.empty,
-                          override val selectedColor: Option[String] = None
-                        ) extends GameStateInterface {
+                          override val selectedColor: Option[String] = None,
+                          override val currentPhase: Option[GamePhase]
+                        ) extends GameStateInterface(players: List[PlayerHand], currentPlayerIndex: Int,
+                                        allCards: List[Card], isReversed: Boolean,
+                                        discardPile: List[Card], drawPile: List[Card],
+                                        selectedColor: Option[String],
+                                        currentPhase: Option[GamePhase]
+) {
 
   override def nextPlayer(): GameStateMock = {
     this.copy(currentPlayerIndex = (currentPlayerIndex + 1) % players.length)
@@ -30,9 +37,9 @@ case class GameStateMock( override val players: List[PlayerHand] = List.fill(2)(
 
   override def isValidPlay(card: Card, topCard: Option[Card], selectedColor: Option[String]): Boolean = true
 
-  override def drawCardAndReturnDrawn(): (GameStateMock, Card) = {
+  override def drawCardAndReturnDrawn(): (GameStateMock, Option[Card]) = {
     val dummyCard = WildCard("wild")
-    (this.copy(), dummyCard)
+    (this.copy(), Some(dummyCard))
   }
 
   override def inputHandler(input: String, gameBoard: ControllerInterface): InputResult = {
@@ -52,7 +59,7 @@ case class GameStateMock( override val players: List[PlayerHand] = List.fill(2)(
   }
 
   override def drawCard(playerHand: PlayerHand, drawPile: List[Card], discardPile: List[Card]):
-  (Card, PlayerHand, List[Card], List[Card]) = {
+  (Option[Card], PlayerHand, List[Card], List[Card]) = {
     this.drawCard(playerHand, drawPile, discardPile)
   }
 

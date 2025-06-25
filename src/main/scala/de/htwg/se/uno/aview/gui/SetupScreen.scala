@@ -1,5 +1,7 @@
 package de.htwg.se.uno.aview.gui
 
+import com.google.inject.Guice
+import de.htwg.se.uno.UnoModule
 import de.htwg.se.uno.controller.controllerComponent.ControllerInterface
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.collections.ObservableBuffer
@@ -18,6 +20,9 @@ import scalafx.scene.text.Text
 object SetupScreen {
 
   def apply(primaryStage: PrimaryStage, gameBoard: ControllerInterface): StackPane = {
+    val injector = Guice.createInjector(new UnoModule)
+    val screenFactory = injector.getInstance(classOf[ScreenFactory])
+
     val setupImage = new ImageView(new Image("file:src/main/resources/UnoSetup.jpg")) {
       fitWidth = 1400
       fitHeight = 900
@@ -68,7 +73,7 @@ object SetupScreen {
           Option(playersInput.value.value) match {
             case Some(players) if players >= 2 && players <= 10 =>
               gameBoard.startGame(players, defaultCardsPerPlayer)
-              val gameScreen = new GameScreen(players, defaultCardsPerPlayer, gameBoard)
+              val gameScreen = new GameScreen(players, defaultCardsPerPlayer, gameBoard, screenFactory)
               primaryStage.scene = new Scene(gameScreen) {
                 fill = Color.DarkRed
               }

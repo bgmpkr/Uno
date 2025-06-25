@@ -10,7 +10,7 @@ case class DrawCardCommand(gameBoard: ControllerInterface) extends Command {
 
   var drawnCard: Option[Card] = None
   private var previousState: Option[GameStateInterface] = None
-  
+
   override def execute(): Unit = {
     gameBoard.gameState.foreach { state =>
       previousState = Some(state)
@@ -22,13 +22,17 @@ case class DrawCardCommand(gameBoard: ControllerInterface) extends Command {
           discardPile = state.discardPile
         )
 
-      drawnCard = Some(cardDrawn)
+      drawnCard = cardDrawn
 
       val updatedPlayers = state.players.updated(
         state.currentPlayerIndex, updatedPlayerHand
       )
 
-      val newGameState = state.copyWithPlayersAndPiles(updatedPlayers, updatedDrawPile, updatedDiscardPile)
+      val newGameState = state.copyWithPlayersAndPiles(
+        players = updatedPlayers,
+        drawPile = updatedDrawPile,
+        discardPile = updatedDiscardPile
+      )
 
       gameBoard.updateState(newGameState)
     }

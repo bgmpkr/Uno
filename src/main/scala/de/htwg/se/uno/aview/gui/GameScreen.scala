@@ -2,7 +2,7 @@ package de.htwg.se.uno.aview.gui
 
 import de.htwg.se.uno.controller.controllerComponent.ControllerInterface
 import de.htwg.se.uno.controller.controllerComponent.base.command.{DrawCardCommand, PlayCardCommand, UnoCalledCommand}
-import de.htwg.se.uno.model.cardComponent.{ActionCard, Card, CardFactory, NumberCard, WildCard}
+import de.htwg.se.uno.model.cardComponent.{ActionCard, Card, CardFactory, CardFactoryImpl, NumberCard, WildCard}
 import de.htwg.se.uno.model.gameComponent.base.GameState
 import de.htwg.se.uno.model.playerComponent.PlayerHand
 import scalafx.animation.{FadeTransition, PauseTransition}
@@ -21,11 +21,12 @@ import scalafx.scene.effect.DropShadow
 
 import scala.util.{Failure, Success}
 
-class GameScreen(players: Int, cardsPerPlayer: Int, gameBoard: ControllerInterface) extends StackPane {
+class GameScreen(players: Int, cardsPerPlayer: Int, gameBoard: ControllerInterface,
+                 screenFactory: ScreenFactory) extends StackPane {
   private var unoCaller: Option[Int] = None
   private var gameOver: Boolean = false
 
-  val allCards: List[Card] = CardFactory.createFullDeck()
+  val allCards: List[Card] = screenFactory.allCards
   private val hands = allCards.grouped(cardsPerPlayer).take(players).map(cards => PlayerHand(cards)).toList
   private val usedCards = hands.flatMap(_.cards)
   private val remainingDeck = allCards.diff(usedCards)

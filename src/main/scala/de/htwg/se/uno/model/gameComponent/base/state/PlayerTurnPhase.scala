@@ -1,13 +1,15 @@
 package de.htwg.se.uno.model.gameComponent.base.state
 
+import com.google.inject.Inject
+import de.htwg.se.uno.model.cardComponent.Card
 import de.htwg.se.uno.model.playerComponent.PlayerHand
 
-case class PlayerTurnPhase(context: UnoPhases) extends GamePhase {
+case class PlayerTurnPhase @Inject() (context: UnoPhases) extends PlayerTurnPhaseI {
   override def nextPlayer(): GamePhase = {
     context.gameState = context.gameState.nextPlayer()
     context.state
   }
-  override def playCard(): GamePhase = this
+  override def playCard(card: Card): GamePhase = this
   override def drawCard(): GamePhase = {
     val gameState = context.gameState
     val discardPile = gameState.discardPile
@@ -30,8 +32,10 @@ case class PlayerTurnPhase(context: UnoPhases) extends GamePhase {
     }
     this
   }
+  override def playCard(card: Card): GamePhase = this
+  override def drawCard(): GamePhase = this
   override def dealInitialCards(): GamePhase = this
   override def checkForWinner(): GamePhase = this
   override def playerSaysUno(): GamePhase = this
-  override def isValidPlay: Boolean = false
+  override def isValidPlay(card: Card): Boolean = false
 }
