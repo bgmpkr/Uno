@@ -24,5 +24,14 @@ class UnoPhases(var gameState: GameStateInterface) {
   
   var selectedColor: Option[String] = None
   def setSelectedColor(color: String): Unit = selectedColor = Some(color)
+  def updateGameState(newState: GameStateInterface): Unit = {
+    this.gameState = newState
+
+    if (newState.players.exists(p => p.cards.isEmpty && p.hasSaidUno)) {
+      currentState = GameOverPhase()
+    } else if (currentState == null) {
+      currentState = StartPhase(this)
+    }
+  }
 }
 

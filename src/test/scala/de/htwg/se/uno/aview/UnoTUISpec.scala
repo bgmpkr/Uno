@@ -106,8 +106,12 @@ class UnoTUISpec extends AnyWordSpec with Matchers {
       )
       GameBoard.updateState(state)
 
-      noException should be thrownBy tui.handleInput("0")
+      val tui = new UnoTUI(GameBoard)
+
+      val simulatedInput = Iterator("2") // => blue
+      noException should be thrownBy tui.handleInput("0", () => simulatedInput.next())
     }
+
 
 
     "not fail when discard pile is empty" in {
@@ -171,7 +175,7 @@ class UnoTUISpec extends AnyWordSpec with Matchers {
     }
 
     "handle exception when checking UNO with uninitialized game state" in {
-      GameBoard.reset() // This will cause gameState to return a Failure
+      GameBoard.reset()
       val tuiNew = new UnoTUI(GameBoard)
       noException should be thrownBy tui.checkForWinner()
     }

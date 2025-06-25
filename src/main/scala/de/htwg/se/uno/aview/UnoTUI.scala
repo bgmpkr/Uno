@@ -44,9 +44,9 @@ class UnoTUI(controller: ControllerInterface) extends Observer {
 
         if (!currentPlayer.cards.exists(card => state.isValidPlay(card, Some(topCard), selectedColor))) {
           println("No playable Card! You have to draw a card...")
-          GameBoard.executeCommand(DrawCardCommand(controller))
-          gameShouldExit = false
-          display()
+//          GameBoard.executeCommand(DrawCardCommand(controller))
+//          gameShouldExit = false
+//          display()
         } else {
           println("Select a card (index) to play or type 'draw' to draw a card:")
         }
@@ -57,7 +57,7 @@ class UnoTUI(controller: ControllerInterface) extends Observer {
 
   }
 
-  def handleInput(input: String): Unit = {
+  def handleInput(input: String, getInput: () => String = () => scala.io.StdIn.readLine()): Unit = {
     GameBoard.gameState match {
       case scala.util.Success(state) =>
         val currentPlayer = state.players(state.currentPlayerIndex)
@@ -72,7 +72,7 @@ class UnoTUI(controller: ControllerInterface) extends Observer {
               GameBoard.updateState(newState)
 
               val chosenColor = None
-                if (drawnCard.isInstanceOf[WildCard]) Some(chooseWildColor())
+                if (drawnCard.isInstanceOf[WildCard]) Some(chooseWildColor(getInput))
                 else None
 
               GameBoard.executeCommand(PlayCardCommand(drawnCard, chosenColor, GameBoard))
@@ -94,7 +94,7 @@ class UnoTUI(controller: ControllerInterface) extends Observer {
               case scala.util.Success(index) if index >= 0 && index < currentPlayer.cards.length =>
                 val chosenCard = currentPlayer.cards(index)
                 val chosenColor = None
-                  if (chosenCard.isInstanceOf[WildCard]) Some(chooseWildColor())
+                  if (chosenCard.isInstanceOf[WildCard]) Some(chooseWildColor(getInput))
                   else None
 
                 GameBoard.executeCommand(PlayCardCommand(chosenCard, chosenColor, GameBoard))
@@ -145,11 +145,16 @@ class UnoTUI(controller: ControllerInterface) extends Observer {
   }
 
   def checkForWinner(): Unit = {
-    GameBoard.checkForWinner() match {
-      case Some(idx) =>
-        println(s"Player ${idx + 1} wins! Game over.")
-        gameShouldExit = true
-      case None => ()
+    GameBoard.gameState match {
+      case scala.util.Success(_) =>
+        GameBoard.checkForWinner() match {
+          case Some(idx) =>
+            println(s"Player ${idx + 1} wins! Game over.")
+            gameShouldExit = true
+          case None => ()
+        }
+      case scala.util.Failure(_) =>
+        println("⚠️ Cannot check for winner: game state not initialized.")
     }
   }
 

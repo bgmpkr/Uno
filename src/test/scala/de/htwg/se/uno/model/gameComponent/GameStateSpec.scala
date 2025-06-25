@@ -20,6 +20,7 @@ class GameStateSpec extends AnyWordSpec with Matchers {
   val drawFour: WildCard = WildCard("wild draw four")
   val yellow7: NumberCard = NumberCard("yellow", 7)
   val green9: NumberCard = NumberCard("green", 9)
+  val green6: NumberCard = NumberCard("green", 6)
 
   val allCards: List[Card] = List(red5, blue5, redDraw2, wildCard, drawFour)
   val player1: PlayerHand = PlayerHand(List(redDraw2))
@@ -95,11 +96,18 @@ class GameStateSpec extends AnyWordSpec with Matchers {
     }
 
     "deal initial cards to all players" in {
-      val state = initialState.copy(drawPile = List.fill(10)(red5))
+      val emptyPlayers = List.fill(2)(PlayerHand(Nil))
+      val state = initialState.copy(
+        players = emptyPlayers,
+        drawPile = List.fill(10)(red5)
+      )
+
       val updatedState = state.dealInitialCards(2)
-      updatedState.players.foreach(_.cards.length shouldBe 3)
+
+      updatedState.players.foreach(_.cards.length shouldBe 2)
       updatedState.drawPile.length shouldBe 6
     }
+
 
     "identify a winner if a player has no cards" in {
       val winningState = initialState.copy(players = List(PlayerHand(Nil), player2))
@@ -113,10 +121,10 @@ class GameStateSpec extends AnyWordSpec with Matchers {
     }
 
     "play a valid card and update discard pile" in {
-      val updatedState = initialState.copy(players = List(PlayerHand(List(redDraw2)), player2))
-        .playCard(redDraw2)
+      val updatedState = initialState.copy(players = List(PlayerHand(List(green6)), player2))
+        .playCard(green6)
 
-      updatedState.discardPile.head shouldBe redDraw2
+      updatedState.discardPile.head shouldBe green6
       updatedState.players.head.cards shouldBe empty
     }
 
@@ -146,18 +154,30 @@ class GameStateSpec extends AnyWordSpec with Matchers {
     }
 
     "successfully play a valid card using inputHandler" in {
-      GameBoard.updateState(initialState)
+      val player1 = PlayerHand(List(redDraw2, blue5))
+      val player2 = PlayerHand(List(blue5, yellow7))
+      val players = List(player1, player2)
 
-      val result = initialState.inputHandler("play card:0", dummyController)
+      val adjustedState = initialState.copy(
+        players = players,
+        discardPile = List(red5)
+      )
+
+      GameBoard.updateState(adjustedState)
+      dummyController.updateState(adjustedState)
+
+      val result = adjustedState.inputHandler("play card:0", dummyController)
 
       result match {
         case Success(newState) =>
-          newState.players.head.cards should not contain red5
-          newState.discardPile.head shouldBe red5
+          newState.players.head.cards should not contain redDraw2
+          newState.discardPile.head shouldBe redDraw2
 
-        case _ => fail("Expected Success but got Failure or other")
+        case _ =>
+          fail("Expected Success but got Failure or other")
       }
     }
+
 
     "fail inputHandler with invalid card index" in {
       GameBoard.updateState(initialState)
@@ -188,7 +208,7 @@ class GameStateSpec extends AnyWordSpec with Matchers {
         allCards = List(redDraw2, blue5, yellow7, green9),
         isReversed = false,
         discardPile = List(blue5),
-        drawPile = List(green9, yellow7),
+        drawPile = List(blue5, green9, yellow7),
         selectedColor = None,
         currentPhase = None
       )

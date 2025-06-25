@@ -5,8 +5,10 @@ import de.htwg.se.uno.model.gameComponent.base.state.{GamePhase, UnoPhases}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
+import java.io.ByteArrayOutputStream
+
 class UnoPhasesSpec extends AnyWordSpec with Matchers {
-  
+
     class DummyState extends GamePhase {
         override def playCard(): GamePhase = this
         override def drawCard(): GamePhase = this
@@ -17,7 +19,7 @@ class UnoPhasesSpec extends AnyWordSpec with Matchers {
         override def isValidPlay: Boolean = true
     }
 
-  "UnoStates" should {
+    "UnoStates" should {
 
         "delegate playCard call to currentState and update state" in {
             val gameState = GameState(List(), 0, List(), false, List(), List())
@@ -105,9 +107,7 @@ class UnoPhasesSpec extends AnyWordSpec with Matchers {
             }
             unoStates.setState(dummy)
 
-            // To capture println output, use a stream
-      import java.io.ByteArrayOutputStream
-      import java.io.PrintStream
+            import java.io.PrintStream
 
             val outStream = new ByteArrayOutputStream()
             Console.withOut(new PrintStream(outStream)) {
@@ -125,6 +125,5 @@ class UnoPhasesSpec extends AnyWordSpec with Matchers {
             unoStates.setSelectedColor("red")
             unoStates.selectedColor shouldBe Some("red")
         }
-
     }
 }
