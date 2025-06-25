@@ -8,10 +8,16 @@ import de.htwg.se.uno.model.gameComponent.{Failure, GameStateInterface, Success}
 import de.htwg.se.uno.util.Command
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.BeforeAndAfterEach
 
 import scala.util.Try
 
-class GameStateSpec extends AnyWordSpec with Matchers {
+class GameStateSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
+
+  override def beforeEach(): Unit = {
+    GameBoard.updateState(initialState)
+    GameBoard.resetUndoRedo()
+  }
 
   val red5: NumberCard = NumberCard("red", 5)
   val blue5: NumberCard = NumberCard("blue", 5)
@@ -38,6 +44,13 @@ class GameStateSpec extends AnyWordSpec with Matchers {
   val dummyController = new ControllerInterface {
     private var currentGameState: GameStateInterface = initialState
     override val fullDeck: List[Card] = allCards
+    var undoStack: List[Command] = Nil
+    var redoStack: List[Command] = Nil
+
+    override def resetUndoRedo(): Unit = {
+      undoStack = Nil
+      redoStack = Nil
+    }
 
     override def gameState: Try[GameStateInterface] = scala.util.Success(currentGameState)
 

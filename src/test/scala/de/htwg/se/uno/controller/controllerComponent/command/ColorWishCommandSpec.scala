@@ -11,9 +11,15 @@ import de.htwg.se.uno.model.gameComponent.GameStateInterface
 import de.htwg.se.uno.model.gameComponent.base.GameState
 import de.htwg.se.uno.model.playerComponent.PlayerHand
 import de.htwg.se.uno.util.Command
+import org.scalatest.BeforeAndAfterEach
 
-class ColorWishCommandSpec extends AnyWordSpec with Matchers {
+class ColorWishCommandSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
+  override def beforeEach(): Unit = {
+    GameBoard.updateState(initialState)
+    GameBoard.resetUndoRedo()
+  }
+  
   val initialState = GameState(
     players = List(),
     currentPlayerIndex = 0,
@@ -32,7 +38,13 @@ class ColorWishCommandSpec extends AnyWordSpec with Matchers {
     val drawFour: WildCard = WildCard("wild draw four")
     val allCards: List[Card] = List(red5, blue5, redDraw2, wildCard, drawFour)
     override val fullDeck: List[Card] = allCards
+    var undoStack: List[Command] = Nil
+    var redoStack: List[Command] = Nil
 
+    override def resetUndoRedo(): Unit = {
+      undoStack = Nil
+      redoStack = Nil
+    }
     override def gameState: scala.util.Try[GameStateInterface] = scala.util.Success(currentGameState)
 
     override def startGame(players: Int, cardsPerPlayer: Int): Unit = {

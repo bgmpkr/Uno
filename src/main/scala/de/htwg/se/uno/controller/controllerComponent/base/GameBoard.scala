@@ -24,6 +24,13 @@ object GameBoard extends Observable, ControllerInterface {
     val shuffled = Random.shuffle(fullDeck)
     (shuffled.headOption.toList, shuffled.tail)
   }
+  var undoStack: List[Command] = Nil
+  var redoStack: List[Command] = Nil
+
+  def resetUndoRedo(): Unit = {
+    undoStack = Nil
+    redoStack = Nil
+  }
 
   def gameState: Try[GameStateInterface] = _gameState match {
     case Some(state) => Success(state)

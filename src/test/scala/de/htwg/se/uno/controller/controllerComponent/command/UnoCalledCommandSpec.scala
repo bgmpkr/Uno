@@ -12,8 +12,14 @@ import de.htwg.se.uno.model.gameComponent.base.GameState
 import de.htwg.se.uno.model.gameComponent.base.state.{GameOverPhase, UnoPhases}
 import de.htwg.se.uno.model.playerComponent.PlayerHand
 import de.htwg.se.uno.util.Command
+import org.scalatest.BeforeAndAfterEach
 
-class UnoCalledCommandSpec extends AnyWordSpec with Matchers {
+class UnoCalledCommandSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
+
+  override def beforeEach(): Unit = {
+    GameBoard.updateState(initialState)
+    GameBoard.resetUndoRedo()
+  }
 
   val red5: NumberCard = NumberCard("red", 5)
   val blue5: NumberCard = NumberCard("blue", 5)
@@ -37,6 +43,13 @@ class UnoCalledCommandSpec extends AnyWordSpec with Matchers {
   val dummyController = new ControllerInterface {
     private var currentGameState: GameStateInterface = initialState
     override val fullDeck: List[Card] = allCards
+    var undoStack: List[Command] = Nil
+    var redoStack: List[Command] = Nil
+
+    override def resetUndoRedo(): Unit = {
+      undoStack = Nil
+      redoStack = Nil
+    }
 
     override def gameState: scala.util.Try[GameStateInterface] = scala.util.Success(currentGameState)
 

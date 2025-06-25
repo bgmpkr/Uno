@@ -12,6 +12,7 @@ import scala.util.Try
 class GameBoardDI @Inject()(fileIO: FileIOInterface) extends ControllerInterface {
   GameBoard.fileIO = fileIO
 
+  def resetUndoRedo(): Unit = GameBoard.resetUndoRedo()
   def initGame(state: GameStateInterface): Unit = GameBoard.initGame(state)
 
   def gameState: Try[GameStateInterface] = GameBoard.gameState

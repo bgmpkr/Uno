@@ -6,8 +6,14 @@ import de.htwg.se.uno.model.playerComponent.PlayerHand
 import de.htwg.se.uno.util.Command
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.BeforeAndAfterEach
 
-class GameBoardSpec extends AnyWordSpec with Matchers {
+class GameBoardSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
+
+  override def beforeEach(): Unit = {
+    GameBoard.updateState(testState)
+    GameBoard.resetUndoRedo()
+  }
 
   val red5: NumberCard = NumberCard("red", 5)
   val blue5: NumberCard = NumberCard("blue", 5)

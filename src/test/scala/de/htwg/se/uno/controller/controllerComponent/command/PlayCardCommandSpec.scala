@@ -8,15 +8,21 @@ import de.htwg.se.uno.model.*
 import de.htwg.se.uno.model.cardComponent.{ActionCard, Card, NumberCard, WildCard}
 import de.htwg.se.uno.model.gameComponent.base.GameState
 import de.htwg.se.uno.model.playerComponent.PlayerHand
+import org.scalatest.BeforeAndAfterEach
 
-class PlayCardCommandSpec extends AnyWordSpec with Matchers {
+class PlayCardCommandSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
+
+  override def beforeEach(): Unit = {
+    GameBoard.updateState(baseState)
+    GameBoard.resetUndoRedo()
+  }
 
   val controller = GameBoard
 
-  val player1: PlayerHand = PlayerHand(List(NumberCard("red", 5), WildCard("wild")))
-  val player2: PlayerHand = PlayerHand(List(NumberCard("green", 7)))
+  val player1 = PlayerHand(List(NumberCard("red", 5), WildCard("wild")))
+  val player2 = PlayerHand(List(NumberCard("green", 7)))
 
-  val baseState: GameState = GameState(
+  val baseState = GameState(
     players = List(player1, player2),
     currentPlayerIndex = 0,
     allCards = Nil,
@@ -26,7 +32,7 @@ class PlayCardCommandSpec extends AnyWordSpec with Matchers {
     selectedColor = None
   )
 
-  def cmd(card: Card, chooseColor: Option[String] = None): PlayCardCommand =
+  def cmd(card: Card, chooseColor: Option[String] = None) =
     PlayCardCommand(card, chooseColor, controller)
 
   "A PlayCardCommand" should {

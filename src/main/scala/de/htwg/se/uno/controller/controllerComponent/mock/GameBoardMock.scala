@@ -11,6 +11,8 @@ class GameBoardMock extends ControllerInterface {
 
   private var _gameState: Option[GameStateInterface] = None
 
+  def resetUndoRedo(): Unit = this.resetUndoRedo()
+
   override def gameState: Try[GameStateInterface] = _gameState match {
     case Some(state) => Success(state)
     case None => Failure(new IllegalStateException("Mock: No GameState"))
