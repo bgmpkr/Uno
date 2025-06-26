@@ -18,6 +18,15 @@ case class PlayCardCommand(
       previousState = Some(state)
       val color = chooseColor.getOrElse("")
 
+//      val selectedCards = List(card)
+//      val topCard = Card
+//      val selectedColor = color
+//
+//      val isValid = gameBoard.strategyPattern.canPlay(selectedCards, topCard, selectedColor, previousState)
+//
+//      if (isValid) {
+//        validPlay = true
+
       if (state.isValidPlay(card, state.discardPile.headOption, chooseColor.orElse(state.selectedColor))) {
         validPlay = true
 

@@ -2,12 +2,14 @@ package de.htwg.se.uno.controller.controllerComponent
 
 import de.htwg.se.uno.model.cardComponent.Card
 import de.htwg.se.uno.model.gameComponent.GameStateInterface
+import de.htwg.se.uno.model.gameComponent.strategy.StrategyPattern
 import de.htwg.se.uno.util.{Command, Observable}
 
 import scala.util.Try
 
 trait ControllerInterface extends Observable {
   val fullDeck: List[Card]
+  var strategyPattern: StrategyPattern
   def resetUndoRedo(): Unit
   def setGameState(newState: GameStateInterface): Unit
   def gameState: Try[GameStateInterface]

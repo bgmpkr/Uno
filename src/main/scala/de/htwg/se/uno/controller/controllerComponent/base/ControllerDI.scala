@@ -5,6 +5,7 @@ import de.htwg.se.uno.controller.controllerComponent.ControllerInterface
 import de.htwg.se.uno.model.cardComponent.Card
 import de.htwg.se.uno.model.fileIOComponent.FileIOInterface
 import de.htwg.se.uno.model.gameComponent.GameStateInterface
+import de.htwg.se.uno.model.gameComponent.strategy.{StandardRule, StrategyPattern}
 import de.htwg.se.uno.util.Command
 
 import scala.util.Try
@@ -41,4 +42,9 @@ class ControllerDI @Inject()(fileIO: FileIOInterface) extends ControllerInterfac
 
   override def isValidPlay(card: Card, topCard: Card, selectedColor: Option[String]): Boolean =
     Controller.isValidPlay(card, topCard, selectedColor)
+
+  def canPlaySelected(cards: List[Card], topCard: Card, selectedColor: Option[String]): Boolean = {
+    Controller.canPlaySelected(cards, topCard, selectedColor)
+  }
+  var strategyPattern: StrategyPattern = Controller.strategyPattern
 }

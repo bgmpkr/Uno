@@ -8,12 +8,15 @@ import de.htwg.se.uno.model.fileIOComponent.FileIOInterface
 import de.htwg.se.uno.model.fileIOComponent.fileIOJSON.FileIOJson
 import de.htwg.se.uno.model.fileIOComponent.fileIOXML.FileIOXml
 import de.htwg.se.uno.model.gameComponent.GameStateInterface
+import de.htwg.se.uno.model.gameComponent.strategy.{StandardRule, StrategyPattern}
 import de.htwg.se.uno.util.{Command, CommandInvoker, Observable, Observer}
+
 import scala.util.{Failure, Random, Success, Try}
 
 object Controller extends Observable, ControllerInterface {
   private var _gameState: Option[GameStateInterface] = None
   private val invoker = new CommandInvoker()
+  var strategyPattern: StrategyPattern = StandardRule
   var fileIO: FileIOInterface = new FileIOJson()
 
   val fullDeck: List[Card] = createDeckWithAllCards()
@@ -106,6 +109,14 @@ object Controller extends Observable, ControllerInterface {
 
   def reset(): Unit = {
     _gameState = None
+  }
+
+  def canPlaySelected(cards: List[Card], topCard: Card, selectedColor: Option[String]): Boolean = {
+    gameState match {
+      case Success(state) =>
+        strategyPattern.canPlay(cards, topCard, selectedColor, state)
+      case Failure(_) => false
+    }
   }
 
   override def startGame(players: Int, cardsPerPlayer: Int): Unit = {
