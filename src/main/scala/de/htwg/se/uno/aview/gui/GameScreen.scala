@@ -95,8 +95,7 @@ class GameScreen(players: Int, cardsPerPlayer: Int, gameBoard: ControllerInterfa
     pickOnBounds = true
     onMouseClicked = (e: MouseEvent) => {
       println("Draw pile clicked!")
-      gameBoard.executeCommand(DrawCardCommand(gameBoard))
-      update()
+      drawCardAndDecide()
       e.consume()
     }
   }
@@ -104,8 +103,7 @@ class GameScreen(players: Int, cardsPerPlayer: Int, gameBoard: ControllerInterfa
   private val drawButton = new Button("Draw") {
     style = buttonStyle
     onAction = _ => {
-      gameBoard.executeCommand(DrawCardCommand(gameBoard))
-      update()
+      drawCardAndDecide()
     }
   }
 
@@ -115,6 +113,15 @@ class GameScreen(players: Int, cardsPerPlayer: Int, gameBoard: ControllerInterfa
       gameBoard.executeCommand(UnoCalledCommand(gameBoard))
       unoCaller = gameBoard.gameState.toOption.map(_.currentPlayerIndex)
       update()
+    }
+  }
+
+  private val skipButton = new Button("Skip") {
+    style = buttonStyle
+    visible = true
+    disable = true
+    onAction = _ => {
+      skipTurn()
     }
   }
 
@@ -212,7 +219,7 @@ class GameScreen(players: Int, cardsPerPlayer: Int, gameBoard: ControllerInterfa
       alignment = Pos.BottomRight
       padding = Insets(0, 150, 100, 0)
       spacing = 10
-      children = Seq(drawButton, unoButton)
+      children = Seq(drawButton, skipButton, unoButton)
       pickOnBounds = false
     },
 
@@ -310,6 +317,9 @@ class GameScreen(players: Int, cardsPerPlayer: Int, gameBoard: ControllerInterfa
             showColorPickerDialog(wc)
           case _ =>
             gameBoard.executeCommand(PlayCardCommand(card, None, gameBoard))
+            drawButton.disable = false
+            skipButton.disable = true
+            skipButton.visible = true
             update()
 
             val pause = new PauseTransition(Duration(400))
@@ -326,6 +336,9 @@ class GameScreen(players: Int, cardsPerPlayer: Int, gameBoard: ControllerInterfa
                       showInvalidMoveMessage()
                     }
                   } else {
+                    drawButton.disable = false
+                    skipButton.disable = true
+                    skipButton.visible = true
                     update()
                   }
 
@@ -381,11 +394,55 @@ class GameScreen(players: Int, cardsPerPlayer: Int, gameBoard: ControllerInterfa
     gameBoard.gameState match {
       case Success(newState) =>
         println(s"Wildcard played successfully, new player index: ${newState.currentPlayerIndex}")
+        drawButton.disable = false
+        skipButton.disable = true
+        skipButton.visible = true
         update()
       case Failure(e) =>
         println(s"Error after playing wildcard: ${e.getMessage}")
         showInvalidMoveMessage()
     }
+  }
+
+  private def drawCardAndDecide(): Unit = {
+    gameBoard.executeCommand(DrawCardCommand(gameBoard))
+
+    gameBoard.gameState match {
+      case Success(state) =>
+        val currentPlayerCards = state.players(state.currentPlayerIndex).cards
+        val topCard = state.discardPile.headOption
+
+        val newCard = currentPlayerCards.lastOption
+
+        val canPlay = for {
+          card <- newCard
+          top <- topCard
+        } yield gameBoard.isValidPlay(card, top, state.selectedColor)
+
+        if (canPlay.contains(true)) {
+          playCard(newCard.get)
+        } else {
+          drawButton.disable = true
+          skipButton.visible = true
+          skipButton.disable = false
+        }
+
+      case Failure(e) =>
+        println(s"Fehler nach Ziehen: ${e.getMessage}")
+    }
+
+    update()
+  }
+
+  private def skipTurn(): Unit = {
+    gameBoard.gameState.foreach { state =>
+      val newState = state.nextPlayer()
+      gameBoard.setGameState(newState)
+    }
+    drawButton.disable = false
+    skipButton.disable = true
+    skipButton.visible = true
+    update()
   }
 
   def update(): Unit = {
@@ -401,6 +458,9 @@ class GameScreen(players: Int, cardsPerPlayer: Int, gameBoard: ControllerInterfa
               winnerLabel.visible = true
               drawButton.disable = true
               unoButton.disable = true
+              drawButton.disable = true
+              skipButton.disable = true
+              skipButton.visible = true
               player1HandView.children.foreach(_.setDisable(true))
               player2HandView.children.foreach(_.setDisable(true))
               return

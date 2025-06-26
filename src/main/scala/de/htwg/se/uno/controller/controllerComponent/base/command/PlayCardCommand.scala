@@ -4,10 +4,11 @@ import de.htwg.se.uno.controller.controllerComponent.ControllerInterface
 import de.htwg.se.uno.model.*
 import de.htwg.se.uno.model.cardComponent.{ActionCard, Card, WildCard}
 import de.htwg.se.uno.model.gameComponent.GameStateInterface
-import de.htwg.se.uno.model.gameComponent.base.GameState
 import de.htwg.se.uno.util.Command
 
-case class PlayCardCommand(card: Card, chooseColor: Option[String] = None, gameBoard: ControllerInterface) extends Command {
+case class PlayCardCommand(
+      card: Card, chooseColor: Option[String] = None,
+      gameBoard: ControllerInterface) extends Command {
 
   private var validPlay: Boolean = false
   private var previousState: Option[GameStateInterface] = None

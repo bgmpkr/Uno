@@ -48,8 +48,6 @@ class UnoTUI(controller: ControllerInterface) extends Observer {
 
         if (!currentPlayer.cards.exists(card => state.isValidPlay(card, Some(topCard), selectedColor))) {
           println("No playable Card! You have to draw a card...")
-          Controller.executeCommand(DrawCardCommand(controller))
-          gameShouldExit = false
           return
         } else {
           println("Select a card (index) to play or type 'draw' to draw a card:")
@@ -74,9 +72,7 @@ class UnoTUI(controller: ControllerInterface) extends Observer {
                 if (newState.isValidPlay(drawnCard, newState.discardPile.headOption, newState.selectedColor)) {
                   println("Playing drawn card...")
                   Controller.updateState(newState)
-
-                  val chosenColor = None
-                    if (drawnCard.isInstanceOf[WildCard]) chooseWildColor()
+                  val chosenColor = if (drawnCard.isInstanceOf[WildCard]) Some(chooseWildColor()) else None
 
                   Controller.executeCommand(PlayCardCommand(drawnCard, chosenColor, Controller))
                 } else {

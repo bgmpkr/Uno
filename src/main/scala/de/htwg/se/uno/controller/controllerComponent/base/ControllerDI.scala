@@ -15,6 +15,8 @@ class ControllerDI @Inject()(fileIO: FileIOInterface) extends ControllerInterfac
   def resetUndoRedo(): Unit = Controller.resetUndoRedo()
   def initGame(state: GameStateInterface): Unit = Controller.initGame(state)
 
+  def setGameState(newState: GameStateInterface): Unit = Controller.setGameState(newState)
+
   def gameState: Try[GameStateInterface] = Controller.gameState
 
   override def startGame(players: Int, cardsPerPlayer: Int): Unit = {

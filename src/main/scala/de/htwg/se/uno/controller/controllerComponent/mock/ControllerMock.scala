@@ -13,6 +13,8 @@ class ControllerMock extends ControllerInterface {
 
   def resetUndoRedo(): Unit = this.resetUndoRedo()
 
+  def setGameState(newState: GameStateInterface): Unit = this.setGameState(newState)
+
   override def gameState: Try[GameStateInterface] = _gameState match {
     case Some(state) => Success(state)
     case None => Failure(new IllegalStateException("Mock: No GameState"))

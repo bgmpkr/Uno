@@ -30,6 +30,11 @@ object Controller extends Observable, ControllerInterface {
     redoStack = Nil
   }
 
+  def setGameState(newState: GameStateInterface): Unit = {
+    _gameState = Some(newState)
+    notifyObservers()
+  }
+
   def gameState: Try[GameStateInterface] = _gameState match {
     case Some(state) => Success(state)
     case None => Failure(new IllegalStateException("GameState not initialized"))
