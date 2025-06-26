@@ -447,10 +447,8 @@ class GameScreen(players: Int, cardsPerPlayer: Int, gameBoard: ControllerInterfa
                   rotate = 180
                 }
               }
-              //cards top
               player2HandView.children.setAll(backCards.map(_.delegate): _*)
 
-              //cards left/ right clean
               playerLeftHandView.children.clear()
               playerRightHandView.children.clear()
 
@@ -494,7 +492,7 @@ class GameScreen(players: Int, cardsPerPlayer: Int, gameBoard: ControllerInterfa
                 }
               }
 
-              //cards player right
+              //cards right player
               val rightPlayerIndex = (currentPlayerIndex + 2) % playerCount
               val rightPlayerCardsCount = state.players(rightPlayerIndex).cards.length
               val rightBackCards = Seq.fill(rightPlayerCardsCount) {

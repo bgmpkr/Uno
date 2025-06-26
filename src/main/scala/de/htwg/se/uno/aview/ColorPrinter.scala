@@ -4,12 +4,11 @@ import de.htwg.se.uno.model.*
 import de.htwg.se.uno.model.cardComponent.{ActionCard, Card, NumberCard, WildCard}
 
 object ColorPrinter {
-  //ansi escape codes
-  val Reset = "\u001B[0m"
-  val Red = "\u001B[31m"
-  val Green = "\u001B[32m"
-  val Blue = "\u001B[34m"
-  val Yellow = "\u001B[93m"
+  private val Reset = "\u001B[0m"
+  private val Red = "\u001B[31m"
+  private val Green = "\u001B[32m"
+  private val Blue = "\u001B[34m"
+  private val Yellow = "\u001B[93m"
 
   def printCard(card: Card): Unit = {
     val colorCode = card.color.toLowerCase match {

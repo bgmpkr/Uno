@@ -23,7 +23,6 @@ class GamePhaseJsonFormatSpec extends AnyWordSpec with Matchers {
     Some("red"),
     None
   ) {
-
     override def drawCard(player: PlayerHand, drawPile: List[Card], discardPile: List[Card]):
     (Option[Card], PlayerHand, List[Card], List[Card]) = (Some(NumberCard("yellow", 3)), player, drawPile, discardPile)
     def playCard(card: Card): GameStateInterface = this
@@ -38,6 +37,7 @@ class GamePhaseJsonFormatSpec extends AnyWordSpec with Matchers {
     override def dealInitialCards(cardsPerPlayer: Int): GameStateInterface = this
     override def drawCardAndReturnDrawn(): (GameStateInterface, Option[Card]) = (this, Some(NumberCard("green", 5)))
     override def handleDrawCards(count: Int): GameStateInterface = this
+    override def drawTwoChainEnded(currentCard: Card, hand: List[Card]): Boolean = false
     override def inputHandler(input: String, gameBoard: ControllerInterface): InputResult = {
         de.htwg.se.uno.model.gameComponent.Success(this)
       }

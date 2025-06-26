@@ -41,7 +41,7 @@ class GameStateSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     drawPile = List(green9, yellow7),
     isReversed = false
   )
-  val dummyController = new ControllerInterface {
+  val dummyController: ControllerInterface = new ControllerInterface {
     private var currentGameState: GameStateInterface = initialState
     override val fullDeck: List[Card] = allCards
     var undoStack: List[Command] = Nil
@@ -55,7 +55,7 @@ class GameStateSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     override def gameState: Try[GameStateInterface] = scala.util.Success(currentGameState)
 
     override def startGame(players: Int, cardsPerPlayer: Int): Unit = {
-      currentGameState = new GameState(
+      currentGameState = GameState(
         players = List.fill(players)(PlayerHand(List.fill(cardsPerPlayer)(allCards.head))),
         currentPlayerIndex = 0,
         allCards = allCards,
@@ -215,7 +215,7 @@ class GameStateSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     "undo invalid play and assign penalty card in inputHandler" in {
       val player1InitialHand = List(redDraw2)
       val player2InitialHand = List(blue5, yellow7)
-      val initialState = new GameState(
+      val initialState = GameState(
         players = List(PlayerHand(player1InitialHand), PlayerHand(player2InitialHand)),
         currentPlayerIndex = 0,
         allCards = List(redDraw2, blue5, yellow7, green9),

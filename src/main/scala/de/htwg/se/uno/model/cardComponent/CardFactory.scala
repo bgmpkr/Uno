@@ -3,9 +3,9 @@ package de.htwg.se.uno.model.cardComponent
 import scala.util.Random
 
 class CardFactory extends CardFactoryInterface {
-  val colors = List("red", "blue", "green", "yellow")
-  val numberRange = 0 to 9
-  val actionTypes = List("draw two", "reverse", "skip")
+  val colors: List[String] = List("red", "blue", "green", "yellow")
+  private val numberRange = 0 to 9
+  private val actionTypes = List("draw two", "reverse", "skip")
 
   def createFullDeck(): List[Card] = {
     val numberCards = for {
@@ -25,6 +25,6 @@ class CardFactory extends CardFactoryInterface {
 
     val fullDeck = numberCards ++ actionCards ++ wildCards
 
-    Random.shuffle(fullDeck.toList)
+    Random.shuffle(fullDeck)
   }
 }

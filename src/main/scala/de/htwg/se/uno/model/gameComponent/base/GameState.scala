@@ -13,6 +13,8 @@ import de.htwg.se.uno.model.gameComponent.base.phase.GamePhaseJsonFormat.*
 import de.htwg.se.uno.util.Observable
 import de.htwg.se.uno.model.gameComponent.GameStateInterface
 import de.htwg.se.uno.model.gameComponent.base.phase.{GameOverPhase, GamePhase}
+import scala.util.boundary
+import scala.util.boundary.break
 
 import scala.util.Try
 
@@ -40,7 +42,7 @@ case class GameState @Inject() (
     this.copy(currentPlayerIndex = nextIndex)
   }
 
-  def dealInitialCards(cardsPerPlayer: Int): GameStateInterface = {
+  def dealInitialCards(cardsPerPlayer: Int): GameStateInterface = boundary {
     var updatedGameState: GameStateInterface = this
     for (cardNum <- 1 to cardsPerPlayer) {
       for (playerIndex <- updatedGameState.players.indices) {
@@ -62,7 +64,7 @@ case class GameState @Inject() (
 
           case None =>
             println(s"⚠️ Could not deal card $cardNum to player $playerIndex - insufficient cards")
-            return updatedGameState
+            break(updatedGameState)
         }
       }
     }
@@ -164,9 +166,10 @@ case class GameState @Inject() (
     } else {
       (currentPlayerIndex + 1) % players.length
     }
+    val drawCount = 2
 
     val (updatedHand, updatedDrawPile, _) =
-      (1 to count).foldLeft((players(nextPlayerIndex), drawPile, discardPile)) {
+      (1 to drawCount).foldLeft((players(nextPlayerIndex), drawPile, discardPile)) {
         case ((hand, draw, _), _) =>
           val (_, newHand, newDraw, _) = drawCard(hand, draw, Nil)
           (newHand, newDraw, Nil)
@@ -176,6 +179,17 @@ case class GameState @Inject() (
       players = players.updated(nextPlayerIndex, updatedHand),
       drawPile = updatedDrawPile
     )
+  }
+
+  def drawTwoChainEnded(currentCard: Card, hand: List[Card]): Boolean = {
+    currentCard match {
+      case ActionCard(_, "draw two") =>
+        !hand.exists {
+          case ActionCard(_, "draw two") => true
+          case _ => false
+        }
+      case _ => false
+    }
   }
 
   override def isValidPlay(card: Card, topCard: Option[Card], selectedColor: Option[String] = None): Boolean = {

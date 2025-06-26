@@ -19,10 +19,10 @@ class PlayCardCommandSpec extends AnyWordSpec with Matchers with BeforeAndAfterE
 
   val controller = Controller
 
-  val player1 = PlayerHand(List(NumberCard("red", 5), WildCard("wild")))
-  val player2 = PlayerHand(List(NumberCard("green", 7)))
+  val player1: PlayerHand = PlayerHand(List(NumberCard("red", 5), WildCard("wild")))
+  val player2: PlayerHand = PlayerHand(List(NumberCard("green", 7)))
 
-  val baseState = GameState(
+  val baseState: GameState = GameState(
     players = List(player1, player2),
     currentPlayerIndex = 0,
     allCards = Nil,
@@ -32,7 +32,7 @@ class PlayCardCommandSpec extends AnyWordSpec with Matchers with BeforeAndAfterE
     selectedColor = None
   )
 
-  def cmd(card: Card, chooseColor: Option[String] = None) =
+  def cmd(card: Card, chooseColor: Option[String] = None): PlayCardCommand =
     PlayCardCommand(card, chooseColor, controller)
 
   "A PlayCardCommand" should {

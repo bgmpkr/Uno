@@ -22,7 +22,7 @@ class UnoCalledPhaseSpec extends AnyWordSpec with Matchers {
 
   "UnoCalledState" should {
 
-    "handle playerSaysUno by updating gamestate and switching to PlayerTurnState" in {
+    "handle playerSaysUno by updating game state and switching to PlayerTurnState" in {
       val dummyGameState = new GameState(
         players = List(PlayerHand(List()), PlayerHand(List())),
         currentPlayerIndex = 0,
@@ -60,7 +60,7 @@ class UnoCalledPhaseSpec extends AnyWordSpec with Matchers {
     }
     
     "playCard should return this" in {
-      val dummyGameState = new GameState(List(), 0, List(), false, List(), List())
+      val dummyGameState = GameState(List(), 0, List(), false, List(), List())
       val unoStates = new UnoPhases(dummyGameState)
       val state = UnoCalledPhase(unoStates)
       val dummyCard = NumberCard("green", 5)
@@ -68,35 +68,35 @@ class UnoCalledPhaseSpec extends AnyWordSpec with Matchers {
     }
 
     "drawCard should return this" in {
-      val dummyGameState = new GameState(List(), 0, List(), false, List(), List())
+      val dummyGameState = GameState(List(), 0, List(), false, List(), List())
       val unoStates = new UnoPhases(dummyGameState)
       val state = UnoCalledPhase(unoStates)
       state.drawCard() shouldBe state
     }
 
     "nextPlayer should return this" in {
-      val dummyGameState = new GameState(List(), 0, List(), false, List(), List())
+      val dummyGameState = GameState(List(), 0, List(), false, List(), List())
       val unoStates = new UnoPhases(dummyGameState)
       val state = UnoCalledPhase(unoStates)
       state.nextPlayer() shouldBe state
     }
 
     "dealInitialCards should return this" in {
-      val dummyGameState = new GameState(List(), 0, List(), false, List(), List())
+      val dummyGameState = GameState(List(), 0, List(), false, List(), List())
       val unoStates = new UnoPhases(dummyGameState)
       val state = UnoCalledPhase(unoStates)
       state.dealInitialCards() shouldBe state
     }
 
     "checkForWinner should return this" in {
-      val dummyGameState = new GameState(List(), 0, List(), false, List(), List())
+      val dummyGameState = GameState(List(), 0, List(), false, List(), List())
       val unoStates = new UnoPhases(dummyGameState)
       val state = UnoCalledPhase(unoStates)
       state.checkForWinner() shouldBe state
     }
 
     "isValidPlay should be false" in {
-      val dummyGameState = new GameState(List(), 0, List(), false, List(), List())
+      val dummyGameState = GameState(List(), 0, List(), false, List(), List())
       val unoStates = new UnoPhases(dummyGameState)
       val state = UnoCalledPhase(unoStates)
       val dummyCard = NumberCard("green", 5)

@@ -8,6 +8,8 @@ import de.htwg.se.uno.model.*
 import de.htwg.se.uno.model.cardComponent.WildCard
 import de.htwg.se.uno.model.playerComponent.PlayerHand
 import de.htwg.se.uno.util.Observer
+import scala.util.boundary
+import scala.util.boundary.break
 
 import scala.io.StdIn.readLine
 
@@ -18,14 +20,16 @@ class UnoTUI(controller: ControllerInterface) extends Observer {
 
   Controller.addObserver(this)
 
-  def display(): Unit = {
+  def display(): Unit = boundary {
     val state = Controller.gameState
     Controller.gameState match {
       case scala.util.Success(state) =>
         if (state.players.isEmpty || gameShouldExit) return
 
         val currentPlayer = state.players(state.currentPlayerIndex)
-        val topCard = state.discardPile.headOption.getOrElse(return)
+        val topCard = state.discardPile.headOption.getOrElse {
+          break(())
+        }
 
         println("\n--------------------------------------------------------------------")
         println(s"Player ${state.currentPlayerIndex + 1}'s turn!")
@@ -72,8 +76,7 @@ class UnoTUI(controller: ControllerInterface) extends Observer {
                   Controller.updateState(newState)
 
                   val chosenColor = None
-                    if (drawnCard.isInstanceOf[WildCard]) Some(chooseWildColor())
-                    else None
+                    if (drawnCard.isInstanceOf[WildCard]) chooseWildColor()
 
                   Controller.executeCommand(PlayCardCommand(drawnCard, chosenColor, Controller))
                 } else {
@@ -98,8 +101,7 @@ class UnoTUI(controller: ControllerInterface) extends Observer {
               case scala.util.Success(index) if index >= 0 && index < currentPlayer.cards.length =>
                 val chosenCard = currentPlayer.cards(index)
                 val chosenColor = None
-                  if (chosenCard.isInstanceOf[WildCard]) Some(chooseWildColor(getInput))
-                  else None
+                  if (chosenCard.isInstanceOf[WildCard]) chooseWildColor(getInput)
 
                 Controller.executeCommand(PlayCardCommand(chosenCard, chosenColor, Controller))
 
@@ -176,7 +178,7 @@ class UnoTUI(controller: ControllerInterface) extends Observer {
 
         if (updatedPlayer.cards.length == 1 && !updatedPlayer.hasSaidUno) {
           Controller.executeCommand(UnoCalledCommand(controller))
-          println("You said 'UNO'!")
+          println("You said UNO!🎉")
         }
       case scala.util.Failure(exception: Throwable) =>
         println(s"Game state not initialized: ${exception.getMessage}")

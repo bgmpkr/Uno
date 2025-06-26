@@ -4,6 +4,7 @@ import de.htwg.se.uno.controller.controllerComponent.ControllerInterface
 import de.htwg.se.uno.model.*
 import de.htwg.se.uno.model.cardComponent.{ActionCard, Card, WildCard}
 import de.htwg.se.uno.model.gameComponent.GameStateInterface
+import de.htwg.se.uno.model.gameComponent.base.GameState
 import de.htwg.se.uno.util.Command
 
 case class PlayCardCommand(card: Card, chooseColor: Option[String] = None, gameBoard: ControllerInterface) extends Command {
@@ -29,7 +30,12 @@ case class PlayCardCommand(card: Card, chooseColor: Option[String] = None, gameB
             newState.copyWithIsReversed(isReversed = !newState.isReversed).nextPlayer()
 
           case ActionCard(_, "draw two") =>
-            newState.handleDrawCards(2).nextPlayer().nextPlayer()
+            val currentPlayerHand = newState.players(newState.currentPlayerIndex).cards
+            if (newState.drawTwoChainEnded(card, currentPlayerHand)) {
+              newState.handleDrawCards(2).nextPlayer().nextPlayer()
+            } else {
+              newState.nextPlayer().nextPlayer()
+            }
 
           case WildCard("wild draw four") =>
             newState.copyWithSelectedColor(selectedColor = chooseColor).handleDrawCards(4).nextPlayer()
@@ -40,10 +46,6 @@ case class PlayCardCommand(card: Card, chooseColor: Option[String] = None, gameB
           case _ =>
             newState.nextPlayer()
         }
-
-        // debugging
-        //      println(s"Before update: currentPlayerIndex = ${newState.currentPlayerIndex}")
-        //      println(s"After transition: currentPlayerIndex = ${transitionedState.currentPlayerIndex}")
 
         gameBoard.updateState(transitionedState)
         transitionedState.notifyObservers()

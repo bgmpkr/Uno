@@ -8,9 +8,7 @@ import de.htwg.se.uno.model.fileIOComponent.FileIOInterface
 import de.htwg.se.uno.model.fileIOComponent.fileIOJSON.FileIOJson
 import de.htwg.se.uno.model.fileIOComponent.fileIOXML.FileIOXml
 import de.htwg.se.uno.model.gameComponent.GameStateInterface
-import de.htwg.se.uno.model.gameComponent.base.GameState
 import de.htwg.se.uno.util.{Command, CommandInvoker, Observable, Observer}
-
 import scala.util.{Failure, Random, Success, Try}
 
 object Controller extends Observable, ControllerInterface {
@@ -67,7 +65,7 @@ object Controller extends Observable, ControllerInterface {
 
     val wildCards = List.fill(4)(WildCard("wild")) ++ List.fill(4)(WildCard("wild draw four"))
 
-    numberCards.toList ++ actionCards.toList ++ wildCards
+    numberCards ++ actionCards ++ wildCards
   }
 
   def shuffleDeck(): (List[Card], List[Card]) = {
@@ -77,7 +75,6 @@ object Controller extends Observable, ControllerInterface {
 
   def executeCommand(command: Command): Unit = {
     invoker.executeCommand(command)
-    // _gameState.foreach(s => JsonFileIO.save(s.asInstanceOf[GameState]))
   }
 
   def undoCommand(): Unit = {

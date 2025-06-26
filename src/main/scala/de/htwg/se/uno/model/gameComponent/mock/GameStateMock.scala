@@ -67,6 +67,10 @@ case class GameStateMock( override val players: List[PlayerHand] = List.fill(2)(
     this.handleDrawCards(count)
   }
 
+  def drawTwoChainEnded(currentCard: Card, hand: List[Card]): Boolean = {
+    this.drawTwoChainEnded(currentCard, hand)
+  }
+
   override def copyWithPiles(drawPile: List[Card], discardPile: List[Card]): GameStateInterface = {
     this.copyWithPiles(drawPile, discardPile)
   }

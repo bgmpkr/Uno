@@ -109,7 +109,7 @@ class UnoTUISpec extends AnyWordSpec with Matchers {
 
       val tui = new UnoTUI(Controller)
 
-      val simulatedInput = Iterator("2") // => blue
+      val simulatedInput = Iterator("2")
       noException should be thrownBy tui.handleInput("0", () => simulatedInput.next())
     }
 
@@ -185,7 +185,7 @@ class UnoTUISpec extends AnyWordSpec with Matchers {
       val unplayableCard = NumberCard("green", 9)
       val hand = PlayerHand(Nil)
       val drawPile = List(unplayableCard)
-      val discardPile = List(NumberCard("red", 3)) // ensures the green 9 isn't playable
+      val discardPile = List(NumberCard("red", 3))
 
       val gameState = GameState(
         players = List(hand),

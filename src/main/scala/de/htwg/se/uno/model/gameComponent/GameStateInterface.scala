@@ -23,6 +23,7 @@ trait GameStateInterface (
   (Option[Card], PlayerHand, List[Card], List[Card])
   def playCard(card: Card, chosenColor: Option[String] = None): GameStateInterface
   def handleDrawCards(count: Int): GameStateInterface
+  def drawTwoChainEnded(currentCard: Card, hand: List[Card]): Boolean
   def isValidPlay(card: Card, topCard: Option[Card], selectedColor: Option[String] = None): Boolean
   def drawCardAndReturnDrawn(): (GameStateInterface, Option[Card])
   def setSelectedColor(color: String): GameStateInterface

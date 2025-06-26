@@ -3,7 +3,6 @@ package de.htwg.se.uno.model.fileIOComponent.fileIOJSON
 import de.htwg.se.uno.model.fileIOComponent.FileIOInterface
 import de.htwg.se.uno.model.gameComponent.base.GameState
 import play.api.libs.json.*
-
 import java.io.{File, PrintWriter}
 import scala.io.Source
 import de.htwg.se.uno.model.JsonFormats.*

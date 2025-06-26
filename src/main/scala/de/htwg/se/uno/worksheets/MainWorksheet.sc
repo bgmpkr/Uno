@@ -1,3 +1,4 @@
+import de.htwg.se.uno.model.cardComponent.{ActionCard, NumberCard, WildCard}
 
 // testing the card class
 val numCard = NumberCard("red", 5)
@@ -18,7 +19,7 @@ wildCard.color     // expected: "wild"
  */
 
 // Game with two Players, initialize GameBoard and -State
-val initialGameBoard = GameBoard(List.empty[Card], List.empty[Card]).shuffleDeck()
+val initialGameBoard = Controller(List.empty[Card], List.empty[Card]).shuffleDeck()
 val players = List(PlayerHand(List.empty[Card]), PlayerHand(List.empty[Card]))
 var gameState = GameState(players, initialGameBoard, 0, initialGameBoard.drawPile)
 

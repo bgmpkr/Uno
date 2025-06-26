@@ -20,7 +20,7 @@ class ColorWishCommandSpec extends AnyWordSpec with Matchers with BeforeAndAfter
     Controller.resetUndoRedo()
   }
   
-  val initialState = GameState(
+  val initialState: GameState = GameState(
     players = List(),
     currentPlayerIndex = 0,
     allCards = List(),
@@ -29,7 +29,7 @@ class ColorWishCommandSpec extends AnyWordSpec with Matchers with BeforeAndAfter
     drawPile = List(),
     selectedColor = None
   )
-  val dummyController = new ControllerInterface {
+  val dummyController: ControllerInterface = new ControllerInterface {
     private var currentGameState: GameStateInterface = initialState
     val red5: NumberCard = NumberCard("red", 5)
     val blue5: NumberCard = NumberCard("blue", 5)

@@ -14,7 +14,7 @@ class PlayerTurnPhaseSpec extends AnyWordSpec with Matchers {
   "PlayerTurnState" should {
 
     "call nextPlayer and return the current state" in {
-      val dummyGameState = new GameState(List(), 0, List(), false, List(), List()) {
+      val dummyGameState: GameState = new GameState(List(), 0, List(), false, List(), List()) {
         override def nextPlayer(): GameState = this.copy(currentPlayerIndex = (currentPlayerIndex + 1) % 4)
       }
 

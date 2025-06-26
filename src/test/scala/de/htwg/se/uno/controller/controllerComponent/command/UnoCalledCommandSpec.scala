@@ -40,7 +40,7 @@ class UnoCalledCommandSpec extends AnyWordSpec with Matchers with BeforeAndAfter
     drawPile = List(wildCard, red5, blue5),
     isReversed = false
   )
-  val dummyController = new ControllerInterface {
+  val dummyController: ControllerInterface = new ControllerInterface {
     private var currentGameState: GameStateInterface = initialState
     override val fullDeck: List[Card] = allCards
     var undoStack: List[Command] = Nil

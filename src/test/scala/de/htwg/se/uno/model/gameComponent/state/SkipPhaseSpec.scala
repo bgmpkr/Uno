@@ -12,7 +12,7 @@ class SkipPhaseSpec extends AnyWordSpec with Matchers {
   "SkipState" should {
 
     "call nextPlayer twice and change state to PlayerTurnPhase" in {
-      val dummyGameState = new GameState(List(), 0, List(), false, List(), List()) {
+      val dummyGameState: GameState = new GameState(List(), 0, List(), false, List(), List()) {
         private var counter = 0
         override def nextPlayer(): GameState = {
           counter += 1
@@ -30,7 +30,7 @@ class SkipPhaseSpec extends AnyWordSpec with Matchers {
     }
 
     "return this on playCard" in {
-      val dummyGameState = new GameState(List(), 0, List(), false, List(), List())
+      val dummyGameState = GameState(List(), 0, List(), false, List(), List())
       val unoStates = new UnoPhases(dummyGameState)
       val skipState = SkipPhase(unoStates)
       val dummyCard = NumberCard("green", 5)
@@ -38,35 +38,35 @@ class SkipPhaseSpec extends AnyWordSpec with Matchers {
     }
 
     "return this on drawCard" in {
-      val dummyGameState = new GameState(List(), 0, List(), false, List(), List())
+      val dummyGameState = GameState(List(), 0, List(), false, List(), List())
       val unoStates = new UnoPhases(dummyGameState)
       val skipState = SkipPhase(unoStates)
       skipState.drawCard() shouldBe skipState
     }
 
     "return this on dealInitialCards" in {
-      val dummyGameState = new GameState(List(), 0, List(), false, List(), List())
+      val dummyGameState = GameState(List(), 0, List(), false, List(), List())
       val unoStates = new UnoPhases(dummyGameState)
       val skipState = SkipPhase(unoStates)
       skipState.dealInitialCards() shouldBe skipState
     }
 
     "return this on checkForWinner" in {
-      val dummyGameState = new GameState(List(), 0, List(), false, List(), List())
+      val dummyGameState = GameState(List(), 0, List(), false, List(), List())
       val unoStates = new UnoPhases(dummyGameState)
       val skipState = SkipPhase(unoStates)
       skipState.checkForWinner() shouldBe skipState
     }
 
     "return this on playerSaysUno" in {
-      val dummyGameState = new GameState(List(), 0, List(), false, List(), List())
+      val dummyGameState = GameState(List(), 0, List(), false, List(), List())
       val unoStates = new UnoPhases(dummyGameState)
       val skipState = SkipPhase(unoStates)
       skipState.playerSaysUno() shouldBe skipState
     }
 
     "isValidPlay should be false" in {
-      val dummyGameState = new GameState(List(), 0, List(), false, List(), List())
+      val dummyGameState = GameState(List(), 0, List(), false, List(), List())
       val unoStates = new UnoPhases(dummyGameState)
       val skipState = SkipPhase(unoStates)
       val dummyCard = NumberCard("green", 5)
