@@ -26,11 +26,12 @@ class DrawCardPhaseSpec extends AnyWordSpec with Matchers {
         discardPile = discardPile,
         drawPile = drawPile
       ) {
-        override def drawCard(player: PlayerHand, drawPile: List[Card], discardPile: List[Card]): (Card, PlayerHand, List[Card], List[Card]) = {
+        override def drawCard(player: PlayerHand, drawPile: List[Card], discardPile: List[Card]):
+        (Option[Card], PlayerHand, List[Card], List[Card]) = {
           val drawnCard = drawPile.head
           val newHand = player + drawnCard
           val newDrawPile = drawPile.tail
-          (drawnCard, newHand, newDrawPile, discardPile)
+          (Some(drawnCard), newHand, newDrawPile, discardPile)
         }
       }
 

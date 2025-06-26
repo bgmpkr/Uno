@@ -52,17 +52,18 @@ class UnoTUISpec extends AnyWordSpec with Matchers {
     }
 
     "choose wild color with simulated input" in {
-      val simulatedInput = () => "2" // blue
+      val simulatedInput = () => "2"
       val chosen = tui.chooseWildColor(simulatedInput)
       chosen shouldBe "blue"
     }
 
     "detect win and set shouldExit to true" in {
       val winningPlayer = PlayerHand(Nil, hasSaidUno = true)
-      val winningState = gameState.copy(players = List(winningPlayer))
+      val dummyLoser    = PlayerHand(List(NumberCard("red", 3)))
+      val winningState = gameState.copy(players = List(winningPlayer, dummyLoser), currentPlayerIndex = 0)
       GameBoard.updateState(winningState)
 
-      GameBoard.checkForWinner().isDefined shouldBe true
+      GameBoard.checkForWinner() shouldBe Some(0)
     }
 
     "trigger update without throwing" in {

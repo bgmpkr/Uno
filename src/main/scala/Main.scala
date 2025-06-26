@@ -11,7 +11,7 @@ import scala.concurrent.Future
 object Main {
   val injector: Injector = Guice.createInjector(new UnoModule)
 
-  val controller = injector.getInstance(classOf[ControllerInterface])
+  val controller: ControllerInterface = injector.getInstance(classOf[ControllerInterface])
 
   def main(args: Array[String]): Unit = {
 

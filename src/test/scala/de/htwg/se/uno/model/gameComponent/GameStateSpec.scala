@@ -128,7 +128,7 @@ class GameStateSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "draw a card and return updated state" in {
-      val (newState, drawnCard) = initialState.drawCardAndReturnDrawn()
+      val (newState, Some(drawnCard)) = initialState.drawCardAndReturnDrawn()
       newState.players.head.cards should contain(drawnCard)
       newState.drawPile.size shouldBe initialState.drawPile.size - 1
     }
@@ -221,7 +221,7 @@ class GameStateSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
         allCards = List(redDraw2, blue5, yellow7, green9),
         isReversed = false,
         discardPile = List(blue5),
-        drawPile = List(blue5, green9, yellow7),
+        drawPile = List(blue5, yellow7),
         selectedColor = None,
         currentPhase = None
       )

@@ -15,17 +15,17 @@ class GamePhaseJsonFormatSpec extends AnyWordSpec with Matchers {
   val dummyHand: PlayerHand = PlayerHand(List(dummyCard))
 
   val dummyGameState: GameStateInterface = new GameStateInterface(List(PlayerHand(List(NumberCard("red", 1)))),
-    0,                                             // currentPlayerIndex
-    List(NumberCard("red", 1)),                    // allCards
-    false,                                         // isReversed
-    List(NumberCard("red", 1)),                    // discardPile
-    List(NumberCard("blue", 2)),                   // drawPile
-    Some("red"),                                   // selectedColor
-    None                                           // currentPhase
+    0,
+    List(NumberCard("red", 1)),
+    false,
+    List(NumberCard("red", 1)),
+    List(NumberCard("blue", 2)),
+    Some("red"),
+    None
   ) {
 
     override def drawCard(player: PlayerHand, drawPile: List[Card], discardPile: List[Card]):
-    (NumberCard, PlayerHand, List[Card], List[Card]) = (NumberCard("yellow", 3), player, drawPile, discardPile)
+    (Option[Card], PlayerHand, List[Card], List[Card]) = (Some(NumberCard("yellow", 3)), player, drawPile, discardPile)
     def playCard(card: Card): GameStateInterface = this
     override def nextPlayer(): GameStateInterface = this
     override def copyWithPlayersAndPiles(players: List[PlayerHand], drawPile: List[Card], discardPile: List[Card]):
@@ -36,7 +36,7 @@ class GamePhaseJsonFormatSpec extends AnyWordSpec with Matchers {
     override def copyWithPiles(drawPile: List[Card], discardPile: List[Card]): GameStateInterface = this
     override def copyWithSelectedColor(selectedColor: Option[String]): GameStateInterface = this
     override def dealInitialCards(cardsPerPlayer: Int): GameStateInterface = this
-    override def drawCardAndReturnDrawn(): (GameStateInterface, Card) = (this, NumberCard("green", 5))
+    override def drawCardAndReturnDrawn(): (GameStateInterface, Option[Card]) = (this, Some(NumberCard("green", 5)))
     override def handleDrawCards(count: Int): GameStateInterface = this
     override def inputHandler(input: String, gameBoard: ControllerInterface): InputResult = {
         de.htwg.se.uno.model.gameComponent.Success(this)

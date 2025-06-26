@@ -8,6 +8,9 @@ import de.htwg.se.uno.model.gameComponent.GameStateInterface
 import de.htwg.se.uno.model.gameComponent.base.GameState
 import de.htwg.se.uno.controller.controllerComponent.base.GameBoardDI
 import de.htwg.se.uno.model.cardComponent.{Card, CardFactory, CardFactoryImpl}
+import de.htwg.se.uno.model.fileIOComponent.FileIOInterface
+import de.htwg.se.uno.model.fileIOComponent.fileIOJSON.FileIOJson
+import de.htwg.se.uno.model.fileIOComponent.fileIOXML.FileIOXml
 import de.htwg.se.uno.model.gameComponent.base.state.*
 import de.htwg.se.uno.model.playerComponent.PlayerHand
 
@@ -47,6 +50,8 @@ class UnoModule extends AbstractModule with ScalaModule {
       )
     }
     bind[ControllerInterface].to[GameBoardDI]
+    bind(classOf[FileIOInterface]).to(classOf[FileIOJson])
+    //bind(classOf[FileIOInterface]).to(classOf[FileIOXml])
 
     bind[CheckWinnerPhaseI].to[CheckWinnerPhase]
     bind[ColorWishPhaseI].to[ColorWishPhase]

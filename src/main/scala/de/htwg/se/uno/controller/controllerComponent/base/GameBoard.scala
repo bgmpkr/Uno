@@ -90,13 +90,8 @@ object GameBoard extends Observable, ControllerInterface {
 
   def checkForWinner(): Option[Int] = {
     requireGameState.players.zipWithIndex.find { case (hand, _) =>
-      hand.isEmpty
-    } match {
-      case Some((_, winnerIndex)) =>
-        Some(winnerIndex)
-      case None =>
-        None
-    }
+      hand.cards.isEmpty && hand.hasSaidUno
+    }.map(_._2)
   }
 
   override def addObserver(observer: Observer): Unit = {

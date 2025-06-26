@@ -1,6 +1,6 @@
 package de.htwg.se.uno.model.gameComponent.state
 
-import de.htwg.se.uno.model.cardComponent.NumberCard
+import de.htwg.se.uno.model.cardComponent.{Card, NumberCard}
 import de.htwg.se.uno.model.gameComponent.base.GameState
 import de.htwg.se.uno.model.gameComponent.base.state.{GamePhase, UnoPhases}
 import org.scalatest.matchers.should.Matchers
@@ -11,13 +11,13 @@ import java.io.ByteArrayOutputStream
 class UnoPhasesSpec extends AnyWordSpec with Matchers {
 
     class DummyState extends GamePhase {
-        override def playCard(): GamePhase = this
+        override def playCard(card: Card): GamePhase = this
         override def drawCard(): GamePhase = this
         override def nextPlayer(): GamePhase = this
         override def dealInitialCards(): GamePhase = this
         override def checkForWinner(): GamePhase = this
         override def playerSaysUno(): GamePhase = this
-        override def isValidPlay: Boolean = true
+        override def isValidPlay(card: Card): Boolean = true
     }
 
     "UnoStates" should {
@@ -90,7 +90,7 @@ class UnoPhasesSpec extends AnyWordSpec with Matchers {
             val dummyCard = NumberCard("green", 5)
             var played = false
             val dummy = new DummyState {
-                override def playCard(): GamePhase = {
+                override def playCard(dummyCard: Card): GamePhase = {
                         played = true
                         this
                 }
@@ -107,7 +107,7 @@ class UnoPhasesSpec extends AnyWordSpec with Matchers {
 
             val dummyCard = NumberCard("green", 5)
             val dummy = new DummyState {
-                override def isValidPlay: Boolean = false
+                override def isValidPlay(dummyCard: Card): Boolean = false
             }
             unoStates.setState(dummy)
 

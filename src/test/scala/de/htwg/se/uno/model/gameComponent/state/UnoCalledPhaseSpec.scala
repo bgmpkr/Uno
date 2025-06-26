@@ -3,7 +3,7 @@ package de.htwg.se.uno.model.gameComponent.state
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import de.htwg.se.uno.model.*
-import de.htwg.se.uno.model.cardComponent.NumberCard
+import de.htwg.se.uno.model.cardComponent.{Card, NumberCard}
 import de.htwg.se.uno.model.gameComponent.base.GameState
 import de.htwg.se.uno.model.gameComponent.base.state.{GamePhase, UnoCalledPhase, UnoPhases}
 import de.htwg.se.uno.model.playerComponent.PlayerHand
@@ -11,13 +11,13 @@ import de.htwg.se.uno.model.playerComponent.PlayerHand
 class UnoCalledPhaseSpec extends AnyWordSpec with Matchers {
 
   class DummyPlayerTurnState(context: UnoPhases) extends GamePhase {
-    override def playCard(): GamePhase = this
+    override def playCard(card: Card): GamePhase = this
     override def drawCard(): GamePhase = this
     override def nextPlayer(): GamePhase = this
     override def dealInitialCards(): GamePhase = this
     override def checkForWinner(): GamePhase = this
     override def playerSaysUno(): GamePhase = this
-    override def isValidPlay: Boolean = true
+    override def isValidPlay(card: Card): Boolean = true
   }
 
   "UnoCalledState" should {
