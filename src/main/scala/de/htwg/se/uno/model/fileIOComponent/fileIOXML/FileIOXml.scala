@@ -4,7 +4,7 @@ import de.htwg.se.uno.model.cardComponent.{ActionCard, Card, NumberCard, WildCar
 import de.htwg.se.uno.model.fileIOComponent.FileIOInterface
 import de.htwg.se.uno.model.gameComponent.GameStateInterface
 import de.htwg.se.uno.model.gameComponent.base.GameState
-import de.htwg.se.uno.model.gameComponent.base.state.GamePhase
+import de.htwg.se.uno.model.gameComponent.base.phase.GamePhase
 import de.htwg.se.uno.model.playerComponent.PlayerHand
 
 import java.io.{File, PrintWriter}
@@ -28,7 +28,7 @@ class FileIOXml extends FileIOInterface {
     gameStateFromXml(loadFileXml)
   }
 
-  def gameStateToXml(game: GameState): Elem = {
+  private def gameStateToXml(game: GameState): Elem = {
     <unoGame>
       <players>
         {game.players.map(playerHandToXml)}
@@ -54,7 +54,7 @@ class FileIOXml extends FileIOInterface {
     </unoGame>
   }
 
-  def gameStateFromXml(node: Node): GameState = {
+  private def gameStateFromXml(node: Node): GameState = {
     val players = (node \ "players" \ "playerHand").map(playerHandFromXml).toList
     val currentPlayerIndex = (node \ "currentPlayerIndex").text.trim.toInt
     val isReversed = (node \ "isReversed").text.trim.toBoolean
@@ -72,7 +72,7 @@ class FileIOXml extends FileIOInterface {
     GameState(players, currentPlayerIndex, allCards = discardPile ++ drawPile, isReversed, discardPile, drawPile, selectedColor, currentPhase)
   }
 
-  def playerHandToXml(playerHand: PlayerHand): Elem = {
+  private def playerHandToXml(playerHand: PlayerHand): Elem = {
     <playerHand>
       <hand>
         <cards>{playerHand.cards.map(cardToXml)}</cards>
@@ -81,13 +81,13 @@ class FileIOXml extends FileIOInterface {
     </playerHand>
   }
 
-  def playerHandFromXml(node: Node): PlayerHand = {
+  private def playerHandFromXml(node: Node): PlayerHand = {
     val hand = (node \ "hand" \"cards" \ "card").map(cardFromXml).toList
     val hasSaidUno = (node \ "hasSaidUno").text.toBoolean
     PlayerHand(hand, hasSaidUno)
   }
 
-  def cardToXml(card: Card): Elem = card match {
+  private def cardToXml(card: Card): Elem = card match {
     case NumberCard(color, number) =>
       <card type="NumberCard">
         <color>{color}</color>
@@ -104,7 +104,7 @@ class FileIOXml extends FileIOInterface {
       </card>
   }
 
-  def cardFromXml(node: Node): Card = {
+  private def cardFromXml(node: Node): Card = {
     (node \ "@type").text match {
       case "NumberCard" =>
         val color = (node \ "color").text

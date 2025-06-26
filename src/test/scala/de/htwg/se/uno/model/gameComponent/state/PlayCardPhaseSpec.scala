@@ -5,7 +5,7 @@ import org.scalatest.matchers.should.Matchers
 import de.htwg.se.uno.model.*
 import de.htwg.se.uno.model.cardComponent.{ActionCard, NumberCard, WildCard}
 import de.htwg.se.uno.model.gameComponent.base.GameState
-import de.htwg.se.uno.model.gameComponent.base.state.{GameOverPhase, PlayCardPhase, PlayerTurnPhase, UnoCalledPhase, UnoPhases}
+import de.htwg.se.uno.model.gameComponent.base.phase.{GameOverPhase, PlayCardPhase, PlayerTurnPhase, UnoCalledPhase, UnoPhases}
 import de.htwg.se.uno.model.playerComponent.PlayerHand
 
 class PlayCardPhaseSpec extends AnyWordSpec with Matchers {

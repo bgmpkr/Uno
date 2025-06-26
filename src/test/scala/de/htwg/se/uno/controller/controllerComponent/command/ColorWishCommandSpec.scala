@@ -1,7 +1,7 @@
 package de.htwg.se.uno.controller.controllerComponent.command
 
 import de.htwg.se.uno.controller.controllerComponent.ControllerInterface
-import de.htwg.se.uno.controller.controllerComponent.base.GameBoard
+import de.htwg.se.uno.controller.controllerComponent.base.Controller
 import de.htwg.se.uno.controller.controllerComponent.base.command.ColorWishCommand
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -16,8 +16,8 @@ import org.scalatest.BeforeAndAfterEach
 class ColorWishCommandSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
   override def beforeEach(): Unit = {
-    GameBoard.updateState(initialState)
-    GameBoard.resetUndoRedo()
+    Controller.updateState(initialState)
+    Controller.resetUndoRedo()
   }
   
   val initialState = GameState(
@@ -107,7 +107,7 @@ class ColorWishCommandSpec extends AnyWordSpec with Matchers with BeforeAndAfter
         selectedColor = Some("red")
       )
 
-      GameBoard.updateState(initialState)
+      Controller.updateState(initialState)
 
       val command = ColorWishCommand("red", dummyController)
       command.execute()
@@ -115,7 +115,7 @@ class ColorWishCommandSpec extends AnyWordSpec with Matchers with BeforeAndAfter
       dummyController.gameState.get.selectedColor shouldBe Some("red")
       command.execute()
 
-      GameBoard.gameState.get.selectedColor shouldBe Some("red")
+      Controller.gameState.get.selectedColor shouldBe Some("red")
     }
 
     "restore the previous state on undo" in {
@@ -129,15 +129,15 @@ class ColorWishCommandSpec extends AnyWordSpec with Matchers with BeforeAndAfter
         selectedColor = Some("blue")
       )
 
-      GameBoard.updateState(initialState)
+      Controller.updateState(initialState)
 
       val command = ColorWishCommand("yellow", dummyController)
       command.execute()
 
-      GameBoard.gameState.get.selectedColor shouldBe Some("blue")
+      Controller.gameState.get.selectedColor shouldBe Some("blue")
 
       command.undo()
-      GameBoard.gameState.get.selectedColor shouldBe Some("blue")
+      Controller.gameState.get.selectedColor shouldBe Some("blue")
     }
 
     "reapply the color change on redo" in {
@@ -151,14 +151,14 @@ class ColorWishCommandSpec extends AnyWordSpec with Matchers with BeforeAndAfter
         selectedColor = Some("blue")
       )
       
-      GameBoard.updateState(initialState)
+      Controller.updateState(initialState)
 
       val command = ColorWishCommand("blue", dummyController)
       command.execute()
       command.undo()
       command.redo()
 
-      GameBoard.gameState.get.selectedColor shouldBe Some("blue")
+      Controller.gameState.get.selectedColor shouldBe Some("blue")
     }
   }
 }

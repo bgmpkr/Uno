@@ -7,7 +7,7 @@ import de.htwg.se.uno.util.{Command, Observer}
 
 import scala.util.{Failure, Success, Try}
 
-class GameBoardMock extends ControllerInterface {
+class ControllerMock extends ControllerInterface {
 
   private var _gameState: Option[GameStateInterface] = None
 

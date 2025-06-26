@@ -1,12 +1,12 @@
 package de.htwg.se.uno.aview
 
-import de.htwg.se.uno.controller.controllerComponent.base.GameBoard
+import de.htwg.se.uno.controller.controllerComponent.base.Controller
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 import de.htwg.se.uno.model.*
 import de.htwg.se.uno.model.cardComponent.{NumberCard, WildCard}
 import de.htwg.se.uno.model.gameComponent.base.GameState
-import de.htwg.se.uno.model.gameComponent.base.state.UnoPhases
+import de.htwg.se.uno.model.gameComponent.base.phase.UnoPhases
 import de.htwg.se.uno.model.playerComponent.PlayerHand
 
 class UnoTUISpec extends AnyWordSpec with Matchers {
@@ -25,19 +25,19 @@ class UnoTUISpec extends AnyWordSpec with Matchers {
       selectedColor = None
     )
 
-    GameBoard.updateState(gameState)
+    Controller.updateState(gameState)
     val context = new UnoPhases(gameState)
-    val tui = new UnoTUI(GameBoard)
+    val tui = new UnoTUI(Controller)
 
     "display the game state without throwing" in {
-      GameBoard.gameState match {
+      Controller.gameState match {
         case scala.util.Success(_) => noException should be thrownBy tui.display()
         case scala.util.Failure(e) => fail(s"GameState not initialized: ${e.getMessage}")
       }
     }
 
     "handle a valid card index input" in {
-      GameBoard.gameState match {
+      Controller.gameState match {
         case scala.util.Success(_) => noException should be thrownBy tui.handleInput("0")
         case scala.util.Failure(e) => fail(s"GameState not initialized: ${e.getMessage}")
       }
@@ -61,9 +61,9 @@ class UnoTUISpec extends AnyWordSpec with Matchers {
       val winningPlayer = PlayerHand(Nil, hasSaidUno = true)
       val dummyLoser    = PlayerHand(List(NumberCard("red", 3)))
       val winningState = gameState.copy(players = List(winningPlayer, dummyLoser), currentPlayerIndex = 0)
-      GameBoard.updateState(winningState)
+      Controller.updateState(winningState)
 
-      GameBoard.checkForWinner() shouldBe Some(0)
+      Controller.checkForWinner() shouldBe Some(0)
     }
 
     "trigger update without throwing" in {
@@ -93,7 +93,7 @@ class UnoTUISpec extends AnyWordSpec with Matchers {
         players = List(PlayerHand(Nil, hasSaidUno = false))
       )
 
-      GameBoard.updateState(state)
+      Controller.updateState(state)
 
       noException should be thrownBy tui.handleInput("draw")
     }
@@ -105,9 +105,9 @@ class UnoTUISpec extends AnyWordSpec with Matchers {
         players = List(hand),
         discardPile = List(NumberCard("red", 3))
       )
-      GameBoard.updateState(state)
+      Controller.updateState(state)
 
-      val tui = new UnoTUI(GameBoard)
+      val tui = new UnoTUI(Controller)
 
       val simulatedInput = Iterator("2") // => blue
       noException should be thrownBy tui.handleInput("0", () => simulatedInput.next())
@@ -117,7 +117,7 @@ class UnoTUISpec extends AnyWordSpec with Matchers {
 
     "not fail when discard pile is empty" in {
       val emptyDiscardState = gameState.copy(discardPile = Nil)
-      GameBoard.updateState(emptyDiscardState)
+      Controller.updateState(emptyDiscardState)
       noException should be thrownBy tui.display()
     }
 
@@ -128,7 +128,7 @@ class UnoTUISpec extends AnyWordSpec with Matchers {
         PlayerHand(List(NumberCard("blue", 2)), hasSaidUno = true)
       ), currentPlayerIndex = 0)
 
-      GameBoard.updateState(stateWithUnoPlayer)
+      Controller.updateState(stateWithUnoPlayer)
       noException should be thrownBy tui.display()
     }
 
@@ -139,14 +139,14 @@ class UnoTUISpec extends AnyWordSpec with Matchers {
     }
 
     "display error message when game state is not initialized" in {
-      GameBoard.reset()
-      val tuiNew = new UnoTUI(GameBoard)
+      Controller.reset()
+      val tuiNew = new UnoTUI(Controller)
       noException should be thrownBy tuiNew.display()
     }
 
     "handle input gracefully when game state is not initialized" in {
-      GameBoard.reset()
-      val tuiNew = new UnoTUI(GameBoard)
+      Controller.reset()
+      val tuiNew = new UnoTUI(Controller)
       noException should be thrownBy tuiNew.handleInput("draw")
     }
 
@@ -166,7 +166,7 @@ class UnoTUISpec extends AnyWordSpec with Matchers {
     "print winning message when a player has won" in {
       val winningPlayer = PlayerHand(Nil, hasSaidUno = true)
       val winningState = gameState.copy(players = List(winningPlayer))
-      GameBoard.updateState(winningState)
+      Controller.updateState(winningState)
       noException should be thrownBy tui.checkForWinner()
     }
 
@@ -176,8 +176,8 @@ class UnoTUISpec extends AnyWordSpec with Matchers {
     }
 
     "handle exception when checking UNO with uninitialized game state" in {
-      GameBoard.reset()
-      val tuiNew = new UnoTUI(GameBoard)
+      Controller.reset()
+      val tuiNew = new UnoTUI(Controller)
       noException should be thrownBy tui.checkForWinner()
     }
 
@@ -197,15 +197,15 @@ class UnoTUISpec extends AnyWordSpec with Matchers {
         selectedColor = None
       )
 
-      GameBoard.updateState(gameState)
-      val tui = new UnoTUI(GameBoard)
+      Controller.updateState(gameState)
+      val tui = new UnoTUI(Controller)
 
       noException should be thrownBy tui.handleInput("draw")
     }
 
     "print error when game state is not initialized in checkUno" in {
-      GameBoard.reset()
-      val tui = new UnoTUI(GameBoard)
+      Controller.reset()
+      val tui = new UnoTUI(Controller)
       noException should be thrownBy tui.checkForWinner()
     }
 

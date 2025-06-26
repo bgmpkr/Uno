@@ -1,11 +1,11 @@
-package de.htwg.se.uno.model.gameComponent.base.state
+package de.htwg.se.uno.model.gameComponent.base.phase
 
 import com.google.inject.Inject
 import de.htwg.se.uno.model.cardComponent.Card
 
-case class SkipPhase @Inject() (context: UnoPhases) extends SkipPhaseI {
+case class ReversePhase @Inject() (context: UnoPhases) extends ReversePhaseI {
   override def nextPlayer(): GamePhase = {
-    context.gameState = context.gameState.nextPlayer().nextPlayer()
+    context.gameState = context.gameState.copyWithIsReversed(isReversed = !context.gameState.isReversed).nextPlayer()
     context.setState(PlayerTurnPhase(context))
     context.state
   }

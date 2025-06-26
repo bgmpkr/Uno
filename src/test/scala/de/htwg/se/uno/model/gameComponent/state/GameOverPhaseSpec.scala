@@ -2,7 +2,7 @@ package de.htwg.se.uno.model.gameComponent.state
 
 import de.htwg.se.uno.model.cardComponent.NumberCard
 import de.htwg.se.uno.model.gameComponent.base.GameState
-import de.htwg.se.uno.model.gameComponent.base.state.{GameOverPhase, UnoPhases}
+import de.htwg.se.uno.model.gameComponent.base.phase.{GameOverPhase, UnoPhases}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 

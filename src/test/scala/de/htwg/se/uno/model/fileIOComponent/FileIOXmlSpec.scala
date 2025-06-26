@@ -1,9 +1,9 @@
 package de.htwg.se.uno.model.fileIOComponent.fileIOXML
 
-import de.htwg.se.uno.controller.controllerComponent.base.GameBoard.fileIO
+import de.htwg.se.uno.controller.controllerComponent.base.Controller.fileIO
 import de.htwg.se.uno.model.cardComponent.*
 import de.htwg.se.uno.model.gameComponent.base.GameState
-import de.htwg.se.uno.model.gameComponent.base.state.GamePhase
+import de.htwg.se.uno.model.gameComponent.base.phase.GamePhase
 import de.htwg.se.uno.model.playerComponent.PlayerHand
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers.*

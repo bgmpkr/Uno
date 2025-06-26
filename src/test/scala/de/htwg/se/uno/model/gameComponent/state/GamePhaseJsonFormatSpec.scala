@@ -1,4 +1,4 @@
-package de.htwg.se.uno.model.gameComponent.base.state
+package de.htwg.se.uno.model.gameComponent.base.phase
 
 import de.htwg.se.uno.model.cardComponent.{Card, NumberCard}
 import de.htwg.se.uno.model.gameComponent.{GameStateInterface, InputResult}
@@ -6,7 +6,7 @@ import de.htwg.se.uno.controller.controllerComponent.ControllerInterface
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 import play.api.libs.json.*
-import de.htwg.se.uno.model.gameComponent.base.state.GamePhaseJsonFormat.*
+import de.htwg.se.uno.model.gameComponent.base.phase.GamePhaseJsonFormat.*
 import de.htwg.se.uno.model.playerComponent.PlayerHand
 
 class GamePhaseJsonFormatSpec extends AnyWordSpec with Matchers {

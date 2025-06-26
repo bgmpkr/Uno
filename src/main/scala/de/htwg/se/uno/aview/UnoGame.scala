@@ -1,6 +1,6 @@
 package de.htwg.se.uno.aview
 
-import de.htwg.se.uno.controller.controllerComponent.base.GameBoard
+import de.htwg.se.uno.controller.controllerComponent.base.Controller
 import de.htwg.se.uno.controller.controllerComponent.base.command.UnoCalledCommand
 
 import scala.annotation.tailrec
@@ -19,7 +19,7 @@ object UnoGame {
 
     val players = numberPlayers.getOrElse(readValidInt("How many players? (2-10): ", min = 2, max = 10))
 
-    val fullDeck = scala.util.Random.shuffle(GameBoard.createDeckWithAllCards())
+    val fullDeck = scala.util.Random.shuffle(Controller.createDeckWithAllCards())
     val (newDrawPile, playerHands) = dealCards(fullDeck, players, cardsPerPlayer)
 
     val (firstCard, remainingDrawPile) = newDrawPile match {
@@ -36,15 +36,15 @@ object UnoGame {
       discardPile = List(firstCard)
     )
 
-    GameBoard.initGame(gameState: GameStateInterface)
+    Controller.initGame(gameState: GameStateInterface)
     println("Let's start the Game!")
     Thread.sleep(2000)
 
-    val initialGameState = GameBoard.gameState
+    val initialGameState = Controller.gameState
 
-    GameBoard.gameState match {
+    Controller.gameState match {
       case scala.util.Success(initialGameState) =>
-        val controller = GameBoard
+        val controller = Controller
         val tui = new UnoTUI(controller)
         tui.display()
         inputLoop(tui)
@@ -79,8 +79,8 @@ object UnoGame {
 
   @tailrec
   def inputLoop(tui: UnoTUI): Unit = {
-    val currentState = GameBoard.gameState
-    GameBoard.gameState match {
+    val currentState = Controller.gameState
+    Controller.gameState match {
       case scala.util.Success(currentState) =>
 
         if (currentState.players.exists(_.cards.isEmpty)) {
@@ -93,7 +93,7 @@ object UnoGame {
         val currentPlayer = currentState.players(currentState.currentPlayerIndex)
 
         if (currentPlayer.cards.length == 1 && !currentPlayer.hasSaidUno) {
-          GameBoard.executeCommand(UnoCalledCommand(GameBoard))
+          Controller.executeCommand(UnoCalledCommand(Controller))
           println(s"$name said UNO!")
         }
 

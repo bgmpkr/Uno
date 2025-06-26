@@ -1,4 +1,4 @@
-package de.htwg.se.uno.model.gameComponent.base.state
+package de.htwg.se.uno.model.gameComponent.base.phase
 
 import com.google.inject.Inject
 import de.htwg.se.uno.model.*

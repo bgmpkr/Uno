@@ -1,7 +1,7 @@
 package de.htwg.se.uno.controller.controllerComponent.command
 
 import de.htwg.se.uno.controller.controllerComponent.ControllerInterface
-import de.htwg.se.uno.controller.controllerComponent.base.GameBoard
+import de.htwg.se.uno.controller.controllerComponent.base.Controller
 import de.htwg.se.uno.controller.controllerComponent.base.command.UnoCalledCommand
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -9,7 +9,7 @@ import de.htwg.se.uno.model.*
 import de.htwg.se.uno.model.cardComponent.{ActionCard, Card, NumberCard, WildCard}
 import de.htwg.se.uno.model.gameComponent.GameStateInterface
 import de.htwg.se.uno.model.gameComponent.base.GameState
-import de.htwg.se.uno.model.gameComponent.base.state.{GameOverPhase, UnoPhases}
+import de.htwg.se.uno.model.gameComponent.base.phase.{GameOverPhase, UnoPhases}
 import de.htwg.se.uno.model.playerComponent.PlayerHand
 import de.htwg.se.uno.util.Command
 import org.scalatest.BeforeAndAfterEach
@@ -17,8 +17,8 @@ import org.scalatest.BeforeAndAfterEach
 class UnoCalledCommandSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
   override def beforeEach(): Unit = {
-    GameBoard.updateState(initialState)
-    GameBoard.resetUndoRedo()
+    Controller.updateState(initialState)
+    Controller.resetUndoRedo()
   }
 
   val red5: NumberCard = NumberCard("red", 5)
@@ -115,14 +115,14 @@ class UnoCalledCommandSpec extends AnyWordSpec with Matchers with BeforeAndAfter
         drawPile = List()
       )
 
-      GameBoard.updateState(gameState)
+      Controller.updateState(gameState)
 
-      val unoStates = new UnoPhases(GameBoard.gameState.get)
+      val unoStates = new UnoPhases(Controller.gameState.get)
       unoStates.init()
 
       val command = UnoCalledCommand(dummyController)
       command.execute()
-      unoStates.updateGameState(GameBoard.gameState.get)
+      unoStates.updateGameState(Controller.gameState.get)
 
       unoStates.checkForWinner()
       unoStates.state shouldBe a[GameOverPhase]
@@ -142,14 +142,14 @@ class UnoCalledCommandSpec extends AnyWordSpec with Matchers with BeforeAndAfter
         drawPile = List()
       )
 
-      GameBoard.updateState(initialState)
+      Controller.updateState(initialState)
 
-      val unoStates = new UnoPhases(GameBoard.gameState.get)
+      val unoStates = new UnoPhases(Controller.gameState.get)
       unoStates.init()
 
       val command = UnoCalledCommand(dummyController)
       command.execute()
-      unoStates.updateGameState(GameBoard.gameState.get)
+      unoStates.updateGameState(Controller.gameState.get)
 
       unoStates.checkForWinner()
 
@@ -169,7 +169,7 @@ class UnoCalledCommandSpec extends AnyWordSpec with Matchers with BeforeAndAfter
         drawPile = List()
       )
 
-      GameBoard.updateState(initialState)
+      Controller.updateState(initialState)
 
       val unoStates = new UnoPhases(initialState)
       unoStates.init()

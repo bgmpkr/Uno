@@ -5,8 +5,8 @@ import org.scalatest.wordspec.AnyWordSpec
 import de.htwg.se.uno.model.*
 import de.htwg.se.uno.model.cardComponent.NumberCard
 import de.htwg.se.uno.model.gameComponent.base.GameState
-import de.htwg.se.uno.model.gameComponent.base.state.{ColorWishPhase, UnoPhases}
-import de.htwg.se.uno.model.gameComponent.base.state.*
+import de.htwg.se.uno.model.gameComponent.base.phase.{ColorWishPhase, UnoPhases}
+import de.htwg.se.uno.model.gameComponent.base.phase.*
 
 class ColorWishPhaseSpec extends AnyWordSpec with Matchers {
 

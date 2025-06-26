@@ -13,7 +13,7 @@ import de.htwg.se.uno.util.{Command, CommandInvoker, Observable, Observer}
 
 import scala.util.{Failure, Random, Success, Try}
 
-object GameBoard extends Observable, ControllerInterface {
+object Controller extends Observable, ControllerInterface {
   private var _gameState: Option[GameStateInterface] = None
   private val invoker = new CommandInvoker()
   var fileIO: FileIOInterface = new FileIOJson()

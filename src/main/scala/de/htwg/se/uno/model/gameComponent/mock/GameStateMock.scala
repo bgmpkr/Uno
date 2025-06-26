@@ -2,7 +2,7 @@ package de.htwg.se.uno.model.gameComponent.mock
 
 import de.htwg.se.uno.controller.controllerComponent.ControllerInterface
 import de.htwg.se.uno.model.cardComponent.{Card, WildCard}
-import de.htwg.se.uno.model.gameComponent.base.state.GamePhase
+import de.htwg.se.uno.model.gameComponent.base.phase.GamePhase
 import de.htwg.se.uno.model.playerComponent.PlayerHand
 import de.htwg.se.uno.model.gameComponent.{GameStateInterface, InputResult, Success}
 

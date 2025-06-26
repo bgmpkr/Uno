@@ -1,7 +1,7 @@
-package de.htwg.se.uno.model.gameComponent.base.state
+package de.htwg.se.uno.model.gameComponent.base.phase
 
 import com.google.inject.Inject
-import de.htwg.se.uno.controller.controllerComponent.base.GameBoard
+import de.htwg.se.uno.controller.controllerComponent.base.Controller
 import de.htwg.se.uno.model.cardComponent.Card
 
 case class DrawCardPhase @Inject() (context: UnoPhases) extends DrawCardPhaseI {
@@ -17,7 +17,7 @@ case class DrawCardPhase @Inject() (context: UnoPhases) extends DrawCardPhaseI {
       drawPile = updatedDrawPile,
       discardPile = updatedDiscardPile
     )
-    GameBoard.updateState(newState)
+    Controller.updateState(newState)
     context.gameState = newState
 
     context.setState(PlayerTurnPhase(context))

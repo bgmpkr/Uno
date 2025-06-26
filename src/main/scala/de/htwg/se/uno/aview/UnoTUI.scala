@@ -2,7 +2,7 @@ package de.htwg.se.uno.aview
 
 import de.htwg.se.uno.aview.ColorPrinter.*
 import de.htwg.se.uno.controller.controllerComponent.ControllerInterface
-import de.htwg.se.uno.controller.controllerComponent.base.GameBoard
+import de.htwg.se.uno.controller.controllerComponent.base.Controller
 import de.htwg.se.uno.controller.controllerComponent.base.command.{DrawCardCommand, PlayCardCommand, UnoCalledCommand}
 import de.htwg.se.uno.model.*
 import de.htwg.se.uno.model.cardComponent.WildCard
@@ -16,11 +16,11 @@ class UnoTUI(controller: ControllerInterface) extends Observer {
   private var gameShouldExit = false
   var selectedColor: Option[String] = None
 
-  GameBoard.addObserver(this)
+  Controller.addObserver(this)
 
   def display(): Unit = {
-    val state = GameBoard.gameState
-    GameBoard.gameState match {
+    val state = Controller.gameState
+    Controller.gameState match {
       case scala.util.Success(state) =>
         if (state.players.isEmpty || gameShouldExit) return
 
@@ -44,7 +44,7 @@ class UnoTUI(controller: ControllerInterface) extends Observer {
 
         if (!currentPlayer.cards.exists(card => state.isValidPlay(card, Some(topCard), selectedColor))) {
           println("No playable Card! You have to draw a card...")
-          GameBoard.executeCommand(DrawCardCommand(controller))
+          Controller.executeCommand(DrawCardCommand(controller))
           gameShouldExit = false
           return
         } else {
@@ -57,7 +57,7 @@ class UnoTUI(controller: ControllerInterface) extends Observer {
   }
 
   def handleInput(input: String, getInput: () => String = () => scala.io.StdIn.readLine()): Unit = {
-    GameBoard.gameState match {
+    Controller.gameState match {
       case scala.util.Success(state) =>
         val currentPlayer = state.players(state.currentPlayerIndex)
 
@@ -69,17 +69,17 @@ class UnoTUI(controller: ControllerInterface) extends Observer {
 
                 if (newState.isValidPlay(drawnCard, newState.discardPile.headOption, newState.selectedColor)) {
                   println("Playing drawn card...")
-                  GameBoard.updateState(newState)
+                  Controller.updateState(newState)
 
                   val chosenColor = None
                     if (drawnCard.isInstanceOf[WildCard]) Some(chooseWildColor())
                     else None
 
-                  GameBoard.executeCommand(PlayCardCommand(drawnCard, chosenColor, GameBoard))
+                  Controller.executeCommand(PlayCardCommand(drawnCard, chosenColor, Controller))
                 } else {
                   println("Card cannot be played, turn ends.")
                   val skipped = newState.nextPlayer()
-                  GameBoard.updateState(skipped)
+                  Controller.updateState(skipped)
                   skipped.notifyObservers()
                 }
 
@@ -88,10 +88,10 @@ class UnoTUI(controller: ControllerInterface) extends Observer {
             }
 
           case "undo" =>
-            GameBoard.undoCommand()
+            Controller.undoCommand()
 
           case "redo" =>
-            GameBoard.redoCommand()
+            Controller.redoCommand()
 
           case _ =>
             scala.util.Try(input.toInt) match {
@@ -101,7 +101,7 @@ class UnoTUI(controller: ControllerInterface) extends Observer {
                   if (chosenCard.isInstanceOf[WildCard]) Some(chooseWildColor(getInput))
                   else None
 
-                GameBoard.executeCommand(PlayCardCommand(chosenCard, chosenColor, GameBoard))
+                Controller.executeCommand(PlayCardCommand(chosenCard, chosenColor, Controller))
 
               case scala.util.Success(_) =>
                 println(s"Invalid index.")
@@ -149,9 +149,9 @@ class UnoTUI(controller: ControllerInterface) extends Observer {
   }
 
   def checkForWinner(): Unit = {
-    GameBoard.gameState match {
+    Controller.gameState match {
       case scala.util.Success(_) =>
-        GameBoard.checkForWinner() match {
+        Controller.checkForWinner() match {
           case Some(idx) =>
             println(s"Player ${idx + 1} wins! Game over.")
             gameShouldExit = true
@@ -169,13 +169,13 @@ class UnoTUI(controller: ControllerInterface) extends Observer {
   }
 
   private def checkUno(): Unit = {
-    val state = GameBoard.gameState
-    GameBoard.gameState match {
+    val state = Controller.gameState
+    Controller.gameState match {
       case scala.util.Success(state) =>
         val updatedPlayer = state.players(state.currentPlayerIndex)
 
         if (updatedPlayer.cards.length == 1 && !updatedPlayer.hasSaidUno) {
-          GameBoard.executeCommand(UnoCalledCommand(controller))
+          Controller.executeCommand(UnoCalledCommand(controller))
           println("You said 'UNO'!")
         }
       case scala.util.Failure(exception: Throwable) =>

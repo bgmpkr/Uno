@@ -9,10 +9,10 @@ import de.htwg.se.uno.model.gameComponent.{Failure, InputResult, Success}
 import de.htwg.se.uno.model.playerComponent.PlayerHand
 import de.htwg.se.uno.model.playerComponent.PlayerJsonFormat.*
 import de.htwg.se.uno.model.cardComponent.CardJsonFormat.*
-import de.htwg.se.uno.model.gameComponent.base.state.GamePhaseJsonFormat.*
+import de.htwg.se.uno.model.gameComponent.base.phase.GamePhaseJsonFormat.*
 import de.htwg.se.uno.util.Observable
 import de.htwg.se.uno.model.gameComponent.GameStateInterface
-import de.htwg.se.uno.model.gameComponent.base.state.{GameOverPhase, GamePhase}
+import de.htwg.se.uno.model.gameComponent.base.phase.{GameOverPhase, GamePhase}
 
 import scala.util.Try
 

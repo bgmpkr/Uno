@@ -1,6 +1,6 @@
 package de.htwg.se.uno.controller.controllerComponent.command
 
-import de.htwg.se.uno.controller.controllerComponent.base.GameBoard
+import de.htwg.se.uno.controller.controllerComponent.base.Controller
 import de.htwg.se.uno.controller.controllerComponent.base.command.PlayCardCommand
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -13,11 +13,11 @@ import org.scalatest.BeforeAndAfterEach
 class PlayCardCommandSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
   override def beforeEach(): Unit = {
-    GameBoard.updateState(baseState)
-    GameBoard.resetUndoRedo()
+    Controller.updateState(baseState)
+    Controller.resetUndoRedo()
   }
 
-  val controller = GameBoard
+  val controller = Controller
 
   val player1 = PlayerHand(List(NumberCard("red", 5), WildCard("wild")))
   val player2 = PlayerHand(List(NumberCard("green", 7)))

@@ -1,4 +1,4 @@
-package de.htwg.se.uno.model.gameComponent.base.state
+package de.htwg.se.uno.model.gameComponent.base.phase
 
 import play.api.libs.json.*
 

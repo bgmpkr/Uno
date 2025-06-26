@@ -6,12 +6,12 @@ import de.htwg.se.uno.controller.controllerComponent.ControllerInterface
 import net.codingwell.scalaguice.ScalaModule
 import de.htwg.se.uno.model.gameComponent.GameStateInterface
 import de.htwg.se.uno.model.gameComponent.base.GameState
-import de.htwg.se.uno.controller.controllerComponent.base.GameBoardDI
-import de.htwg.se.uno.model.cardComponent.{Card, CardFactory, CardFactoryImpl}
+import de.htwg.se.uno.controller.controllerComponent.base.ControllerDI
+import de.htwg.se.uno.model.cardComponent.{Card, CardFactoryInterface, CardFactory}
 import de.htwg.se.uno.model.fileIOComponent.FileIOInterface
 import de.htwg.se.uno.model.fileIOComponent.fileIOJSON.FileIOJson
 import de.htwg.se.uno.model.fileIOComponent.fileIOXML.FileIOXml
-import de.htwg.se.uno.model.gameComponent.base.state.*
+import de.htwg.se.uno.model.gameComponent.base.phase.*
 import de.htwg.se.uno.model.playerComponent.PlayerHand
 
 class UnoModule extends AbstractModule with ScalaModule {
@@ -21,7 +21,7 @@ class UnoModule extends AbstractModule with ScalaModule {
 
     @Provides
     def provideGameState(): GameStateInterface = {
-      val cardFactory = new CardFactoryImpl
+      val cardFactory = new CardFactory
       val fullDeck = cardFactory.createFullDeck()
       val shuffleDeck = scala.util.Random.shuffle(fullDeck)
 
@@ -49,7 +49,7 @@ class UnoModule extends AbstractModule with ScalaModule {
         currentPhase = None
       )
     }
-    bind[ControllerInterface].to[GameBoardDI]
+    bind[ControllerInterface].to[ControllerDI]
     bind(classOf[FileIOInterface]).to(classOf[FileIOJson])
     //bind(classOf[FileIOInterface]).to(classOf[FileIOXml])
 
@@ -64,7 +64,7 @@ class UnoModule extends AbstractModule with ScalaModule {
     bind[StartPhaseI].to[StartPhase]
     bind[UnoCalledPhaseI].to[UnoCalledPhase]
 
-    bind(classOf[CardFactory]).to(classOf[CardFactoryImpl])
+    bind(classOf[CardFactoryInterface]).to(classOf[CardFactory])
     bind(new TypeLiteral[List[Card]]() {}).toInstance(List.empty)
     bind(new TypeLiteral[List[PlayerHand]]() {}).toInstance(List.empty)
     bind(new TypeLiteral[Option[GamePhase]]() {}).toInstance(None)

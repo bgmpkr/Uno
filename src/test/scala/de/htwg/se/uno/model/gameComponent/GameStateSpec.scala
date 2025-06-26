@@ -1,7 +1,7 @@
 package de.htwg.se.uno.model.gameComponent.base
 
 import de.htwg.se.uno.controller.controllerComponent.ControllerInterface
-import de.htwg.se.uno.controller.controllerComponent.base.GameBoard
+import de.htwg.se.uno.controller.controllerComponent.base.Controller
 import de.htwg.se.uno.model.cardComponent.{ActionCard, Card, NumberCard, WildCard}
 import de.htwg.se.uno.model.playerComponent.PlayerHand
 import de.htwg.se.uno.model.gameComponent.{Failure, GameStateInterface, Success}
@@ -15,8 +15,8 @@ import scala.util.Try
 class GameStateSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
   override def beforeEach(): Unit = {
-    GameBoard.updateState(initialState)
-    GameBoard.resetUndoRedo()
+    Controller.updateState(initialState)
+    Controller.resetUndoRedo()
   }
 
   val red5: NumberCard = NumberCard("red", 5)
@@ -176,7 +176,7 @@ class GameStateSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
         discardPile = List(red5)
       )
 
-      GameBoard.updateState(adjustedState)
+      Controller.updateState(adjustedState)
       dummyController.updateState(adjustedState)
 
       val result = adjustedState.inputHandler("play card:0", dummyController)
@@ -193,7 +193,7 @@ class GameStateSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
 
     "fail inputHandler with invalid card index" in {
-      GameBoard.updateState(initialState)
+      Controller.updateState(initialState)
 
       val result = initialState.inputHandler("play card:99", dummyController)
 
@@ -226,7 +226,7 @@ class GameStateSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
         currentPhase = None
       )
 
-      GameBoard.updateState(initialState)
+      Controller.updateState(initialState)
 
       val result = initialState.inputHandler("play card:0", dummyController)
 

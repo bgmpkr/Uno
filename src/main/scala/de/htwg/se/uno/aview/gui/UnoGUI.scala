@@ -3,7 +3,7 @@ package de.htwg.se.uno.aview.gui
 import de.htwg.se.uno.aview.UnoGame
 import de.htwg.se.uno.controller.controllerComponent.ControllerInterface
 import de.htwg.se.uno.util.Observer
-import de.htwg.se.uno.controller.controllerComponent.base.GameBoard
+import de.htwg.se.uno.controller.controllerComponent.base.Controller
 import scalafx.application.JFXApp3
 import scalafx.scene.Scene
 import scalafx.Includes.jfxScene2sfx
@@ -18,7 +18,7 @@ class UnoGUI(controller: ControllerInterface) extends JFXApp3 with Observer {
   }
 
   override def start(): Unit = {
-    GameBoard.addObserver(this)
+    Controller.addObserver(this)
 
     stage = new PrimaryStage {
       title = "Uno"
