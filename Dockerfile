@@ -1,4 +1,4 @@
-FROM hseeberger/scala-sbt:11.0.16_3.3.1_1.9.9
+FROM hseeberger/scala-sbt:8u222_1.3.5_2.13.1
 WORKDIR /uno
 ADD . /uno
 CMD sbt test
