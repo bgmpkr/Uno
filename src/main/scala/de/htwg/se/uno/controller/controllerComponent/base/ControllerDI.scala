@@ -6,6 +6,7 @@ import de.htwg.se.uno.model.cardComponent.Card
 import de.htwg.se.uno.model.fileIOComponent.FileIOInterface
 import de.htwg.se.uno.model.gameComponent.GameStateInterface
 import de.htwg.se.uno.model.gameComponent.strategy.{StandardRule, StrategyPattern}
+import de.htwg.se.uno.model.playerComponent.PlayerHand
 import de.htwg.se.uno.util.Command
 
 import scala.util.Try
@@ -16,7 +17,9 @@ class ControllerDI @Inject()(fileIO: FileIOInterface) extends ControllerInterfac
   def resetUndoRedo(): Unit = Controller.resetUndoRedo()
   def initGame(state: GameStateInterface): Unit = Controller.initGame(state)
 
+  def setStrategyPattern(strategy: StrategyPattern): Unit = Controller.setStrategyPattern(strategy)
   def setGameState(newState: GameStateInterface): Unit = Controller.setGameState(newState)
+  def playTurn(player: PlayerHand, topCard: Card): Unit = Controller.playTurn(player, topCard)
 
   def gameState: Try[GameStateInterface] = Controller.gameState
 
@@ -43,8 +46,10 @@ class ControllerDI @Inject()(fileIO: FileIOInterface) extends ControllerInterfac
   override def isValidPlay(card: Card, topCard: Card, selectedColor: Option[String]): Boolean =
     Controller.isValidPlay(card, topCard, selectedColor)
 
-  def canPlaySelected(cards: List[Card], topCard: Card, selectedColor: Option[String]): Boolean = {
-    Controller.canPlaySelected(cards, topCard, selectedColor)
+  def input(command: String): Unit = Controller.input(command)  
+
+  def canPlaySelected(cards: List[Card], topCard: Card): List[Card] = {
+    Controller.canPlaySelected(cards, topCard)
   }
   var strategyPattern: StrategyPattern = Controller.strategyPattern
 }

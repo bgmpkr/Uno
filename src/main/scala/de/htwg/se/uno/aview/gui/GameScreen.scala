@@ -1,23 +1,26 @@
 package de.htwg.se.uno.aview.gui
 
 import de.htwg.se.uno.controller.controllerComponent.ControllerInterface
+import de.htwg.se.uno.controller.controllerComponent.base.Controller
 import de.htwg.se.uno.controller.controllerComponent.base.command.{DrawCardCommand, PlayCardCommand, UnoCalledCommand}
-import de.htwg.se.uno.model.cardComponent.{ActionCard, Card, CardFactoryInterface, CardFactory, NumberCard, WildCard}
+import de.htwg.se.uno.model.cardComponent.{ActionCard, Card, CardFactory, CardFactoryInterface, NumberCard, WildCard}
 import de.htwg.se.uno.model.gameComponent.base.GameState
+import de.htwg.se.uno.model.gameComponent.strategy.{DoubleCardRule, StandardRule}
 import de.htwg.se.uno.model.playerComponent.PlayerHand
 import scalafx.animation.{FadeTransition, PauseTransition}
 import scalafx.geometry.{Insets, Pos}
-import scalafx.scene.control.{Alert, Button, ButtonBar, ButtonType, Label}
+import scalafx.scene.control.{Alert, Button, ButtonBar, ButtonType, CheckBox, Label}
 import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.input.MouseEvent
 import scalafx.scene.layout.{HBox, StackPane, VBox}
 import scalafx.scene.paint.Color
 import scalafx.scene.text.{Font, FontWeight}
-import scalafx.scene.Cursor
+import scalafx.scene.{Cursor, Scene}
 import scalafx.util.Duration
 import scalafx.Includes.*
 import scalafx.application.Platform
 import scalafx.scene.effect.DropShadow
+import scalafx.stage.{Modality, Stage}
 
 import scala.util.{Failure, Success}
 
@@ -25,6 +28,7 @@ class GameScreen(players: Int, cardsPerPlayer: Int, gameBoard: ControllerInterfa
                  screenFactory: ScreenFactory) extends StackPane {
   private var unoCaller: Option[Int] = None
   private var gameOver: Boolean = false
+  private var selectedCardsForDouble: List[Card] = List()
 
   val allCards: List[Card] = screenFactory.allCards
   private val hands = allCards.grouped(cardsPerPlayer).take(players).map(cards => PlayerHand(cards)).toList
@@ -128,6 +132,13 @@ class GameScreen(players: Int, cardsPerPlayer: Int, gameBoard: ControllerInterfa
   private val exitButton = new Button("Exit") {
     style = buttonStyle
     onAction = _ => System.exit(0)
+    cursor = Cursor.Hand
+  }
+
+  private val settingsButton = new Button("⚙") {
+    style = buttonStyle
+    onAction = _ => showSettings()
+    cursor = Cursor.Hand
   }
 
   private val youLabel = new Label {
@@ -163,8 +174,9 @@ class GameScreen(players: Int, cardsPerPlayer: Int, gameBoard: ControllerInterfa
 
     new VBox {
       alignment = Pos.TopLeft
-      padding = Insets(20)
-      children = Seq(exitButton)
+      padding = Insets(0, 150, 100, 0)
+      spacing = 10
+      children = Seq(exitButton, settingsButton)
       pickOnBounds = false
     },
 
@@ -308,6 +320,34 @@ class GameScreen(players: Int, cardsPerPlayer: Int, gameBoard: ControllerInterfa
   }
 
   def playCard(card: Card): Unit = {
+    selectedCardsForDouble = selectedCardsForDouble :+ card
+
+    if (selectedCardsForDouble.length == 2) {
+      val card1 = selectedCardsForDouble.head
+      val card2 = selectedCardsForDouble(1)
+
+      if (card1 == card2 && gameBoard.allowDoubleCards) {
+        val maybeState = gameBoard.gameState.toOption
+        val currentPlayerHand = maybeState.map { state =>
+          state.players(state.currentPlayerIndex).cards
+        }.getOrElse(Nil)
+
+        val index1 = currentPlayerHand.indexWhere(_ == card1)
+        val index2 = currentPlayerHand.lastIndexWhere(_ == card2)
+
+        val doubleCommand = s"play double:$index1:$index2"
+        gameBoard.input(doubleCommand)
+
+        selectedCardsForDouble = List()
+        update()
+      } else {
+        playSingleCard(card1)
+        selectedCardsForDouble = List()
+      }
+    }
+  }
+
+  private def playSingleCard(card: Card): Unit = {
     gameBoard.gameState match {
       case Success(state) =>
         val oldTop = state.discardPile.headOption.getOrElse(card)
@@ -352,7 +392,6 @@ class GameScreen(players: Int, cardsPerPlayer: Int, gameBoard: ControllerInterfa
       case Failure(e) => println(s"Initial game state error: ${e.getMessage}")
     }
   }
-
 
   private def showInvalidMoveMessage(): Unit = {
     new Alert(Alert.AlertType.Warning) {
@@ -443,6 +482,82 @@ class GameScreen(players: Int, cardsPerPlayer: Int, gameBoard: ControllerInterfa
     skipButton.disable = true
     skipButton.visible = true
     update()
+  }
+
+  private def showSettings(): Unit = {
+    var popupStage: Stage = null
+
+    val doubleCardRuleCheckbox = new CheckBox("Allow playing double cards") {
+      style = "-fx-text-fill: white;"
+      cursor = Cursor.Hand
+    }
+    val standardRuleCheckbox = new CheckBox("Standard rules") {
+      style = "-fx-text-fill: white;"
+      cursor = Cursor.Hand
+    }
+    standardRuleCheckbox.setSelected(true)
+
+    doubleCardRuleCheckbox.selected.onChange { (_, _, selected) =>
+      if (selected) standardRuleCheckbox.setSelected(false)
+    }
+    standardRuleCheckbox.selected.onChange { (_, _, selected) =>
+      if (selected) doubleCardRuleCheckbox.setSelected(false)
+    }
+
+    val applyButton = new Button("Apply") {
+      style = "-fx-font-family: 'sans-serif'; " +
+        "-fx-font-style: italic; " +
+        "-fx-font-weight: bold; " +
+        "-fx-font-size: 15pt; " +
+        "-fx-background-color: #F9A602; " +
+        "-fx-text-fill: white; " +
+        "-fx-padding: 10 20; " +
+        "-fx-background-radius: 10; " +
+        "-fx-border-radius: 10;"
+      cursor = Cursor.Hand
+      onAction = _ => {
+        val strategy = if (doubleCardRuleCheckbox.isSelected)
+          DoubleCardRule
+        else
+          StandardRule
+
+        Controller.setStrategyPattern(strategy)
+        popupStage.close()
+      }
+    }
+
+    val popupContent = new VBox(15) {
+      padding = Insets(20)
+      prefWidth = 300
+      prefHeight = 200
+      alignment = Pos.Center
+      style =
+        """
+          |-fx-background-color: #F9A602;
+          |-fx-text-fill: white;
+          |-fx-font-size: 14px;
+          |-fx-border-radius: 10;
+          |-fx-background-radius: 10;
+    """.stripMargin
+      children = Seq(
+        new Label("Choose game rules:") {
+          style = "-fx-text-fill: white; " +
+            "-fx-font-size: 14px;"
+        },
+        doubleCardRuleCheckbox,
+        standardRuleCheckbox,
+        applyButton
+      )
+    }
+
+    popupStage = new Stage() {
+      title = "Settings"
+      scene = new Scene(popupContent)
+      initModality(Modality.ApplicationModal)
+      resizable = false
+    }
+
+    popupStage.showAndWait()
   }
 
   def update(): Unit = {

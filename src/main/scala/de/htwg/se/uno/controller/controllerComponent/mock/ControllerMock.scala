@@ -4,6 +4,7 @@ import de.htwg.se.uno.controller.controllerComponent.ControllerInterface
 import de.htwg.se.uno.model.cardComponent.{ActionCard, Card, NumberCard, WildCard}
 import de.htwg.se.uno.model.gameComponent.GameStateInterface
 import de.htwg.se.uno.model.gameComponent.strategy.{StandardRule, StrategyPattern}
+import de.htwg.se.uno.model.playerComponent.PlayerHand
 import de.htwg.se.uno.util.{Command, Observer}
 
 import scala.util.{Failure, Success, Try}
@@ -14,6 +15,10 @@ class ControllerMock extends ControllerInterface {
   var strategyPattern: StrategyPattern = StandardRule
 
   def resetUndoRedo(): Unit = this.resetUndoRedo()
+
+  def setStrategyPattern(strategy: StrategyPattern): Unit = this.setStrategyPattern(strategy)
+  
+  def playTurn(player: PlayerHand, topCard: Card): Unit = this.playTurn(player, topCard)
 
   def setGameState(newState: GameStateInterface): Unit = this.setGameState(newState)
 
@@ -60,6 +65,10 @@ class ControllerMock extends ControllerInterface {
 
   def canPlaySelected(cards: List[Card], topCard: Card, selectedColor: Option[String]): Boolean = {
     true
+  }
+
+  def input(command: String): Unit = {
+    this.input(command)
   }
 
   override def startGame(players: Int, cardsPerPlayer: Int): Unit = {

@@ -4,7 +4,6 @@ import de.htwg.se.uno.model.cardComponent.Card
 import de.htwg.se.uno.model.gameComponent.GameStateInterface
 
 trait StrategyPattern {
-  def canPlay(selectedCards: List[Card], topCard: Card, selectedColor: Option[String], gameState: GameStateInterface):
-  Boolean
+  def canPlay(cardsInHand: List[Card], topCard: Card): List[Card]
   def isMultiPlayAllowed: Boolean
 }

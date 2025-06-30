@@ -11,7 +11,8 @@ trait GameStateInterface (
        val allCards: List[Card], val isReversed: Boolean = false,
        val discardPile: List[Card], val drawPile: List[Card],
        val selectedColor: Option[String] = None,
-       val currentPhase: Option[GamePhase] = None
+       val currentPhase: Option[GamePhase] = None,
+       val allowDoubleCards: Boolean = false              
   ) extends Observable {
   def setGameOver(): GameStateInterface
   def copyWithPiles(drawPile: List[Card], discardPile: List[Card]): GameStateInterface

@@ -4,13 +4,12 @@ import de.htwg.se.uno.model.cardComponent.Card
 import de.htwg.se.uno.model.gameComponent.GameStateInterface
 
 object DoubleCardRule extends StrategyPattern {
-  def canPlay(selectedCards: List[Card],
-              topCard: Card,
-              selectedColor: Option[String],
-              gameState: GameStateInterface): Boolean = {
-    selectedCards.nonEmpty &&
-      selectedCards.distinct.size == 1 &&
-      gameState.isValidPlay(selectedCards.head, Some(gameState.discardPile.head), gameState.selectedColor)
+  override def canPlay(cardsInHand: List[Card], topCard: Card): List[Card] = {
+    val matching = cardsInHand.filter(_.matches(topCard))
+    if (matching.size >= 2 && matching.groupBy(identity).exists(_._2.size >= 2)) {
+      val doubleCard = matching.groupBy(identity).find(_._2.size >= 2).get._2.take(2)
+      doubleCard
+    } else matching.take(1)
   }
 
   def isMultiPlayAllowed: Boolean = true

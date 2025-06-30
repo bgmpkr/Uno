@@ -8,7 +8,9 @@ import de.htwg.se.uno.model.fileIOComponent.FileIOInterface
 import de.htwg.se.uno.model.fileIOComponent.fileIOJSON.FileIOJson
 import de.htwg.se.uno.model.fileIOComponent.fileIOXML.FileIOXml
 import de.htwg.se.uno.model.gameComponent.GameStateInterface
+import de.htwg.se.uno.model.gameComponent.base.GameState
 import de.htwg.se.uno.model.gameComponent.strategy.{StandardRule, StrategyPattern}
+import de.htwg.se.uno.model.playerComponent.PlayerHand
 import de.htwg.se.uno.util.{Command, CommandInvoker, Observable, Observer}
 
 import scala.util.{Failure, Random, Success, Try}
@@ -18,6 +20,7 @@ object Controller extends Observable, ControllerInterface {
   private val invoker = new CommandInvoker()
   var strategyPattern: StrategyPattern = StandardRule
   var fileIO: FileIOInterface = new FileIOJson()
+  override val allowDoubleCards: Boolean = false
 
   val fullDeck: List[Card] = createDeckWithAllCards()
 
@@ -31,6 +34,15 @@ object Controller extends Observable, ControllerInterface {
   def resetUndoRedo(): Unit = {
     undoStack = Nil
     redoStack = Nil
+  }
+
+  def setStrategyPattern(strategy: StrategyPattern): Unit = {
+    this.strategyPattern = strategy
+  }
+
+  def playTurn(player: PlayerHand, topCard: Card): Unit = {
+    val playable = strategyPattern.canPlay(player.cards, topCard)
+    println(s"Player can play: $playable")
   }
 
   def setGameState(newState: GameStateInterface): Unit = {
@@ -111,11 +123,35 @@ object Controller extends Observable, ControllerInterface {
     _gameState = None
   }
 
-  def canPlaySelected(cards: List[Card], topCard: Card, selectedColor: Option[String]): Boolean = {
+  def canPlaySelected(cards: List[Card], topCard: Card): List[Card] = {
+    strategyPattern.canPlay(cards, topCard)
+  }
+
+  def setDoubleCardRule(allow: Boolean): Unit = {
     gameState match {
-      case Success(state) =>
-        strategyPattern.canPlay(cards, topCard, selectedColor, state)
-      case Failure(_) => false
+      case scala.util.Success(state: GameState) =>
+        val updatedState = state.copy(allowDoubleCards = allow)
+        updateState(updatedState)
+
+      case scala.util.Success(_) =>
+        println("❌ Cannot update rule - GameState is not valid.")
+
+      case scala.util.Failure(ex) =>
+        println("❌ Cannot update rule - GameState not initialized.")
+    }
+  }
+
+  def input(command: String): Unit = {
+    gameState match {
+      case scala.util.Success(state) =>
+        state.inputHandler(command, Controller) match {
+          case de.htwg.se.uno.model.gameComponent.Success(newState: GameStateInterface) => updateState(newState)
+          case de.htwg.se.uno.model.gameComponent.Failure(message) =>
+            println(s"❌ Input error: $message")
+        }
+
+      case scala.util.Failure(_) =>
+        println("❌ No valid GameState to handle input.")
     }
   }
 

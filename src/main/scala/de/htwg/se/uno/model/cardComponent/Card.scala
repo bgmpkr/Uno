@@ -2,14 +2,30 @@ package de.htwg.se.uno.model.cardComponent
 
 import scala.util.Random
 
-sealed trait Card { def color: String }
+sealed trait Card {
+  def color: String
+  def matches(other: Card): Boolean
+}
 
 val colors = List("red", "blue", "green", "yellow")
 
-case class NumberCard(color: String, number: Int) extends Card
-case class ActionCard(color: String, action: String) extends Card
+case class NumberCard(color: String, number: Int) extends Card {
+  override def matches(other: Card): Boolean = other match {
+    case NumberCard(c, n) => this.color == c || this.number == n
+    case ActionCard(c, _) => this.color == c
+    case WildCard(_) => true
+  }
+}
+case class ActionCard(color: String, action: String) extends Card {
+  override def matches(other: Card): Boolean = other match {
+    case NumberCard(c, _) => this.color == c
+    case ActionCard(c, a) => this.color == c || this.action == a
+    case WildCard(_) => true
+  }
+}
 case class WildCard(action: String) extends Card {
   override def color: String = "wild"
+  override def matches(other: Card): Boolean = true
 }
 
 object Card {
