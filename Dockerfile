@@ -11,4 +11,6 @@ WORKDIR /uno
 
 ADD . /uno
 
+COPY target/scala-3.3.1/Uno-assembly-0.1.0-SNAPSHOT.jar uno.jar
+
 CMD ["java", "-jar", "uno.jar"]
