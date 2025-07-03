@@ -23,14 +23,12 @@ case class GameState @Inject() (
       override val allCards: List[Card], override val isReversed: Boolean = false,
       override val discardPile: List[Card], override val drawPile: List[Card],
       override val selectedColor: Option[String] = None,
-      override val currentPhase: Option[GamePhase] = None,
-      override val allowDoubleCards: Boolean = false
+      override val currentPhase: Option[GamePhase] = None
                                ) extends Observable, GameStateInterface(players: List[PlayerHand], currentPlayerIndex: Int,
                               allCards: List[Card], isReversed: Boolean,
                               discardPile: List[Card], drawPile: List[Card],
                               selectedColor: Option[String],
-                              currentPhase: Option[GamePhase],
-                              allowDoubleCards: Boolean
+                              currentPhase: Option[GamePhase]
   ){
 
   def nextPlayer(): GameStateInterface = {
@@ -294,33 +292,45 @@ case class GameState @Inject() (
       case s"play card:$index" =>
         Try(index.toInt) match {
           case scala.util.Success(idx) if idx >= 0 && idx < currentPlayer.cards.length =>
-            val card = currentPlayer.cards(idx)
+            val selectedCard = currentPlayer.cards(idx)
             val topCard = discardPile.lastOption
             val chooseColor = selectedColor
 
-            val isValid = isValidPlay(card, topCard)
-            val command = PlayCardCommand(card, chooseColor, gameBoard)
+            val matchingCards = currentPlayer.cards.groupBy(identity).getOrElse(selectedCard, List())
+            val strategyAllowsDouble = gameBoard.strategyPattern.isMultiPlayAllowed
 
-            gameBoard.executeCommand(command)
+            if (strategyAllowsDouble && matchingCards.size >= 2) {
+              println("✅ Double play recognized by strategy pattern!")
 
-            if (!isValid) {
-              println("⚠️ Wrong card played. Your play will be undone. A penalty card will be drawn.")
+              val updatedHand = currentPlayer.removeCard(selectedCard).removeCard(selectedCard)
+              val updatedPlayers = players.updated(currentPlayerIndex, updatedHand)
+              val updatedDiscard = selectedCard :: selectedCard :: discardPile
+              val updatedState = this.copy(players = updatedPlayers, discardPile = updatedDiscard)
 
-              gameBoard.undoCommand()
-
-              gameBoard.gameState match {
-                case scala.util.Success(state) =>
-                  val (newState, drawnCard) = state.drawCardAndReturnDrawn()
-                  gameBoard.updateState(newState)
-                  Failure("Invalid play. You received a penalty card.")
-
-                case scala.util.Failure(_) =>
-                  Failure("Game state not initialized.")
-              }
+              Success(updatedState)
             } else {
-              gameBoard.gameState match {
-                case scala.util.Success(state) => Success(state)
-                case scala.util.Failure(_) => Failure("Game state not initialized.")
+              val isValid = isValidPlay(selectedCard, topCard)
+              val command = PlayCardCommand(selectedCard, chooseColor, gameBoard)
+
+              gameBoard.executeCommand(command)
+
+              if (!isValid) {
+                println("⚠️ Wrong card played. Your play will be undone. A penalty card will be drawn.")
+                gameBoard.undoCommand()
+
+                gameBoard.gameState match {
+                  case scala.util.Success(state) =>
+                    val (newState, _) = state.drawCardAndReturnDrawn()
+                    gameBoard.updateState(newState)
+                    Failure("Invalid play. You received a penalty card.")
+                  case scala.util.Failure(_) =>
+                    Failure("Game state not initialized.")
+                }
+              } else {
+                gameBoard.gameState match {
+                  case scala.util.Success(state) => Success(state)
+                  case scala.util.Failure(_) => Failure("Game state not initialized.")
+                }
               }
             }
 
@@ -329,40 +339,7 @@ case class GameState @Inject() (
           case scala.util.Failure(_) =>
             Failure("Card index must be a digit.")
         }
-
-
-      case s"play double:$index1:$index2" =>
-        if (!allowDoubleCards) {
-          Failure("Double card play is not allowed by current rules.")
-        } else {
-          (Try(index1.toInt), Try(index2.toInt)) match {
-            case (scala.util.Success(i1), scala.util.Success(i2)) if i1 != i2 &&
-              i1 >= 0 && i1 < currentPlayer.cards.length &&
-              i2 >= 0 && i2 < currentPlayer.cards.length =>
-
-              val card1 = currentPlayer.cards(i1)
-              val card2 = currentPlayer.cards(i2)
-
-              if (card1 == card2 && isValidPlay(card1, discardPile.headOption)) {
-                val updatedHand = currentPlayer.removeCard(card1).removeCard(card2)
-                val updatedPlayers = players.updated(currentPlayerIndex, updatedHand)
-                val updatedDiscard = card2 :: card1 :: discardPile
-                val updatedState = this.copy(players = updatedPlayers, discardPile = updatedDiscard)
-
-                Success(updatedState)
-              } else {
-                Failure("Cards must be the same to play double.")
-              }
-
-            case _ =>
-              Failure("Invalid indices for double play.")
-          }
-        }
     }
-  }
-
-  def copyWithDoubleCardRule(allow: Boolean): GameStateInterface = {
-    this.copy(allowDoubleCards = allow)
   }
 
   override def copyWithPiles(drawPile: List[Card], discardPile: List[Card]): GameStateInterface = {

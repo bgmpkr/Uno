@@ -12,7 +12,6 @@ import scala.util.Try
 trait ControllerInterface extends Observable {
   val fullDeck: List[Card]
   var strategyPattern: StrategyPattern
-  val allowDoubleCards: Boolean = false
   def resetUndoRedo(): Unit
   def setStrategyPattern(strategy: StrategyPattern): Unit
   def playTurn(player: PlayerHand, topCard: Card): Unit

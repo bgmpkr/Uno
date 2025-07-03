@@ -20,7 +20,6 @@ object Controller extends Observable, ControllerInterface {
   private val invoker = new CommandInvoker()
   var strategyPattern: StrategyPattern = StandardRule
   var fileIO: FileIOInterface = new FileIOJson()
-  override val allowDoubleCards: Boolean = false
 
   val fullDeck: List[Card] = createDeckWithAllCards()
 
@@ -125,20 +124,6 @@ object Controller extends Observable, ControllerInterface {
 
   def canPlaySelected(cards: List[Card], topCard: Card): List[Card] = {
     strategyPattern.canPlay(cards, topCard)
-  }
-
-  def setDoubleCardRule(allow: Boolean): Unit = {
-    gameState match {
-      case scala.util.Success(state: GameState) =>
-        val updatedState = state.copy(allowDoubleCards = allow)
-        updateState(updatedState)
-
-      case scala.util.Success(_) =>
-        println("❌ Cannot update rule - GameState is not valid.")
-
-      case scala.util.Failure(ex) =>
-        println("❌ Cannot update rule - GameState not initialized.")
-    }
   }
 
   def input(command: String): Unit = {

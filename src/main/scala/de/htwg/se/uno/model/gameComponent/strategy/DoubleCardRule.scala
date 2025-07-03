@@ -1,7 +1,6 @@
 package de.htwg.se.uno.model.gameComponent.strategy
 
 import de.htwg.se.uno.model.cardComponent.Card
-import de.htwg.se.uno.model.gameComponent.GameStateInterface
 
 object DoubleCardRule extends StrategyPattern {
   override def canPlay(cardsInHand: List[Card], topCard: Card): List[Card] = {

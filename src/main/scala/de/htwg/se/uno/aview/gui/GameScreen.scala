@@ -326,7 +326,7 @@ class GameScreen(players: Int, cardsPerPlayer: Int, gameBoard: ControllerInterfa
       val card1 = selectedCardsForDouble.head
       val card2 = selectedCardsForDouble(1)
 
-      if (card1 == card2 && gameBoard.allowDoubleCards) {
+      if (card1 == card2 && gameBoard.strategyPattern.isMultiPlayAllowed) {
         val maybeState = gameBoard.gameState.toOption
         val currentPlayerHand = maybeState.map { state =>
           state.players(state.currentPlayerIndex).cards
