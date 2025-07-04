@@ -17,10 +17,14 @@ lazy val root = project
     libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "2.3.0",
     libraryDependencies += "com.typesafe.play" %% "play-json" % "2.10.0",
 
-    coverageEnabled := true,
+    coverageEnabled := false,
 
     assembly / assemblyMergeStrategy := {
+      case PathList("META-INF", "services", xs @ _*) => MergeStrategy.concat
       case PathList("META-INF", xs @ _*) => MergeStrategy.discard
-      case x => MergeStrategy.first
-    }
-  )
+      case _ => MergeStrategy.first
+    },
+
+    Compile / resourceDirectory := baseDirectory.value / "src" / "main" / "resources"
+
+)

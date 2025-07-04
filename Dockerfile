@@ -1,16 +1,14 @@
-FROM hseeberger/scala-sbt:8u222_1.3.5_2.13.1
+FROM openjdk:17-slim
 
-RUN sed -i 's/deb.debian.org/archive.debian.org/g' /etc/apt/sources.list && \
-    sed -i 's|security.debian.org|archive.debian.org|g' /etc/apt/sources.list && \
-    sed -i '/stretch-updates/d' /etc/apt/sources.list && \
-    echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99no-check-valid-until && \
-    apt-get update && \
-    apt-get install -y libxrender1 libxtst6 libxi6
+RUN apt-get update && apt-get install -y \
+    libxrender1 libxtst6 libxi6 libgtk-3-0 libx11-6 \
+    libgl1-mesa-glx libglib2.0-0
 
 WORKDIR /uno
 
 ADD . /uno
 
+COPY resources/ /resources/
 COPY target/scala-3.3.1/Uno-assembly-0.1.0-SNAPSHOT.jar uno.jar
 
 CMD ["java", "-jar", "uno.jar"]

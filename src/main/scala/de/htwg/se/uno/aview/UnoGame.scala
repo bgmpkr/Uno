@@ -97,7 +97,7 @@ object UnoGame {
           println(s"$name said UNO!")
         }
 
-        val input = readLine().trim
+        val input = Option(readLine()).map(_.trim).getOrElse("")
         input match {
           case "exit" =>
             println("Game exited.")
